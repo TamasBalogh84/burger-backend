@@ -19,9 +19,4 @@
     <ProjectReference Include="..\BurgerBackend.Domain\BurgerBackend.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Contracts\Parameters\" />
-    <Folder Include="Contracts\Results\" />
-  </ItemGroup>
-
 </Project>

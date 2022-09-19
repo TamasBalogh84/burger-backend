@@ -1,4 +1,4 @@
-﻿namespace BurgerBackend.Domain.Entities.Cosmos
+﻿namespace BurgerBackend.Api.Contracts.Models
 {
     public class Review
     {

@@ -128,6 +128,33 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
         }
 
+        public async Task CreateAsync(TEntity entity, string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        {
+            if (entity is null)
+            {
+                throw new ArgumentNullException(nameof(entity));
+            }
+
+            try
+            {
+                var partitionKey = ResolvePartitionKey(partitionKeyArea);
+                var partitionKeyFromPartitionKeyStruct = GetPartitionKeyFromPartitionKeyStruct(partitionKey);
+
+                entity.PartitionKey = partitionKeyFromPartitionKeyStruct;
+
+                await Container.CreateItemAsync(
+                    entity,
+                    partitionKey,
+                    new ItemRequestOptions { EnableContentResponseOnWrite = false },
+                    cancellationToken: cancellationToken);
+            }
+            catch (CosmosException ex)
+            {
+                _logger.LogError(ex, $"Unable to create entity with id `{entity.Id}` in `{_databaseId}.{_containerId}`.");
+                throw;
+            }
+        }
+
         public string GetPartitionKeyFromPartitionKeyStruct(PartitionKey input)
     => input
         .ToString()

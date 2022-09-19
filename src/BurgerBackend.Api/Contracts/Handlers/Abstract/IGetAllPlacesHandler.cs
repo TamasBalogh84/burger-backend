@@ -1,6 +1,6 @@
-﻿using BurgerBackend.Api.Contracts;
+﻿using BurgerBackend.Api.Contracts.Results;
 
-namespace BurgerBackend.Domain.Handlers
+namespace BurgerBackend.Api.Contracts.Handlers.Abstract
 {
     public interface IGetAllPlacesHandler
     {

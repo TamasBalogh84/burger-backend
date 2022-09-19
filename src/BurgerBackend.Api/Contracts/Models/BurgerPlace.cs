@@ -1,7 +1,9 @@
-﻿namespace BurgerBackend.Domain.Entities.Cosmos
+﻿namespace BurgerBackend.Api.Contracts.Models
 {
-    public class BurgerPlace : Entity
+    public class BurgerPlace
     {
+        public Guid Id { get; set; }
+
         public IEnumerable<Burger> AvailableBurgers { get; set; }
 
         public Location Location { get; set; }

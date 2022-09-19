@@ -8,16 +8,22 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
 {
     public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurgerPlacesRepository
     {
-        private readonly Container _container;
-
-        private readonly CosmosConfiguration _cosmosConfiguration;
-
-        private readonly ILogger<BurgerPlacesRepository> _logger;
-
         public BurgerPlacesRepository(CosmosClient client, IOptions<CosmosConfiguration> cosmosConfiguration, ILogger<BurgerPlacesRepository> logger) 
             : base(client, cosmosConfiguration.Value.Database, cosmosConfiguration.Value.BurgerPlacesContainer, logger)
+        {}
+
+        public async Task<IEnumerable<Review>> GetReviewsByPlaceIdAsync(Guid placeId, CancellationToken cancellationToken)
         {
-            _cosmosConfiguration = cosmosConfiguration.Value ?? throw new ArgumentNullException(nameof(CosmosConfiguration));
+            var result = await GetByIdAsync(placeId, cancellationToken: cancellationToken);
+
+            return result?.Reviews ?? Enumerable.Empty<Review>();
+        }
+
+        public async Task<Review?> GetReviewByIdAsync(Guid reviewId, CancellationToken cancellationToken)
+        {
+            var places = await GetAllAsync(cancellationToken: cancellationToken);
+
+           return places.Select(p => p.Reviews.FirstOrDefault(r => r.Id == reviewId)).FirstOrDefault();
         }
     }
 }
