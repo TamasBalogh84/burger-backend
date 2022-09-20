@@ -12,8 +12,8 @@ using Microsoft.Identity.Web;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
- //   .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
 builder.Host.ConfigureAppConfiguration(options =>
 {
@@ -32,7 +32,6 @@ builder.Host.ConfigureAppConfiguration(options =>
         return clientBuilder.Build();
     });
 
-    //services.AddScoped<ICosmosRepositoryBase<BurgerPlace>, CosmosRepositoryBase<BurgerPlace>>();
     services.AddScoped<IBurgerPlacesRepository, BurgerPlacesRepository>();
     services.AddScoped<IGetAllPlacesHandler, GetAllPlacesHandler>();
     services.AddScoped<IGetPlaceByIdHandler, GetPlaceByIdHandler>();
@@ -66,8 +65,8 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-//app.UseAuthentication();
-//app.UseAuthorization();
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.MapControllers();
 

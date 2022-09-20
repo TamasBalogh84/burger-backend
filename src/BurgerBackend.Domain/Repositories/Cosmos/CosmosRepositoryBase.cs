@@ -40,14 +40,14 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             Container = CosmosClient.GetContainer(_databaseId, _containerId);
         }
 
-        public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<TEntity?> GetByIdAsync(string id, CancellationToken cancellationToken = default)
         {
             TEntity? result = default;
 
             try
             {
                 var response = await Container.ReadItemAsync<TEntity>(
-                    id.ToString(),
+                    id,
                     _partitionKey,
                     cancellationToken: cancellationToken);
 
@@ -109,12 +109,32 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
         }
 
-        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task<bool> ReplaceAsync(TEntity entity, string id, CancellationToken cancellationToken = default)
+        {
+            try
+            {
+                var response = await Container.ReplaceItemAsync<TEntity>(entity, id, _partitionKey, cancellationToken: cancellationToken);
+
+                return response.StatusCode == HttpStatusCode.OK;
+            }
+            catch (CosmosException ex)
+            {
+                if (ex.StatusCode == HttpStatusCode.NotFound)
+                {
+                    return false;
+                }
+
+                _logger.LogError(ex, $"Unable to delete entity with id `{id}` in `{_databaseId}.{_containerId}`.");
+                throw;
+            }
+        }
+
+        public async Task<bool> DeleteAsync(string id, CancellationToken cancellationToken = default)
         {
             try
             {
                 var response = await Container.DeleteItemAsync<TEntity>(
-                    id.ToString(),
+                    id,
                     _partitionKey,
                     cancellationToken: cancellationToken);
 

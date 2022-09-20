@@ -33,7 +33,7 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete
                     return CreateReviewResult.BadRequest(logMessage);
                 }
 
-                var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId, cancellationToken);
+                var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken);
 
                 if (place is null)
                 {
