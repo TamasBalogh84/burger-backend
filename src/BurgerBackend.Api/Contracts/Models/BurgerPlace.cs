@@ -6,6 +6,8 @@
 
         public IEnumerable<Burger> AvailableBurgers { get; set; }
 
+        public string Information { get; set; } = string.Empty;
+
         public Location Location { get; set; }
 
         public string OpeningTime { get; set; } = string.Empty;

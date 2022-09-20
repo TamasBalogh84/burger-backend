@@ -33,9 +33,7 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete
                     return CreateReviewResult.BadRequest(logMessage);
                 }
 
-                var place =
-                    await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId,
-                        cancellationToken: cancellationToken);
+                var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId, cancellationToken);
 
                 if (place is null)
                 {
@@ -43,9 +41,10 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete
                 }
 
                 var newReview = parameters.Review.ToReview();
-                place.Reviews.ToList().Add(newReview);
 
-                await _burgerPlacesRepository.CreateAsync(place, cancellationToken: cancellationToken);
+                place.Reviews = place.Reviews.Append(newReview);
+
+                await _burgerPlacesRepository.StoreAsync(place, cancellationToken);
 
                 return CreateReviewResult.Ok(newReview.ToReview());
             }

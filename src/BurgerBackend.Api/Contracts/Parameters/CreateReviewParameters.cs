@@ -19,5 +19,10 @@ namespace BurgerBackend.Api.Contracts.Parameters
         [Required]
         public Review Review { get; set; }
 
+        public override string ToString()
+        {
+            return $"{nameof(PlaceId)}: {PlaceId}";
+        }
+
     }
 }

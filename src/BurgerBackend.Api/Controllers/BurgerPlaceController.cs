@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers
 {
-    [Authorize]
+    //[Authorize]
     [ApiController]
     [Route("/api/v1/burger-places")]
-    public class BurgerPlaceController : ControllerBase
+    public class BurgerPlacesController : ControllerBase
     {
         [HttpGet]
         [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
@@ -30,7 +30,7 @@ namespace BurgerBackend.Api.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetPlaceById(GetPlaceByIdParameters parameters, [FromServices] IGetPlaceByIdHandler handler, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetPlaceById([FromRoute] GetPlaceByIdParameters parameters, [FromServices] IGetPlaceByIdHandler handler, CancellationToken cancellationToken)
         {
             if (handler is null)
             {
@@ -45,7 +45,7 @@ namespace BurgerBackend.Api.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetReviewsByPlaceId(GetReviewsByPlaceIdParameters parameters, [FromServices] IGetReviewsByPlaceIdHandler handler, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetReviewsByPlaceId([FromRoute] GetReviewsByPlaceIdParameters parameters, [FromServices] IGetReviewsByPlaceIdHandler handler, CancellationToken cancellationToken)
         {
             if (handler is null)
             {
@@ -60,7 +60,7 @@ namespace BurgerBackend.Api.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetReviewById(GetReviewByIdParameters parameters, [FromServices] IGetReviewByIdHandler handler, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetReviewById([FromRoute] GetReviewByIdParameters parameters, [FromServices] IGetReviewByIdHandler handler, CancellationToken cancellationToken)
         {
             if (handler is null)
             {
@@ -105,7 +105,7 @@ namespace BurgerBackend.Api.Controllers
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> DeleteReviewAsync(DeleteReviewParameters parameters, [FromServices] IDeleteReviewHandler handler, CancellationToken cancellationToken)
+        public async Task<ActionResult> DeleteReviewAsync([FromRoute] DeleteReviewParameters parameters, [FromServices] IDeleteReviewHandler handler, CancellationToken cancellationToken)
         {
             if (handler is null)
             {

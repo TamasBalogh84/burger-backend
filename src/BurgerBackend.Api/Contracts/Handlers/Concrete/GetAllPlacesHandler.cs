@@ -20,7 +20,7 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete
         {
             try
             {
-                var result = await _burgerPlacesRepository.GetAllAsync(cancellationToken: cancellationToken);
+                var result = await _burgerPlacesRepository.GetAllAsync(cancellationToken);
 
                 if (!result.Any())
                 {

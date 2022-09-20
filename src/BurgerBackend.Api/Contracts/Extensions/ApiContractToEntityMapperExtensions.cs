@@ -8,7 +8,7 @@ namespace BurgerBackend.Api.Contracts.Extensions
         {
             return new Review
             {
-                Id = new Guid(),
+                Id = review.Id,
                 ReviewerId = review.ReviewerId,
                 Scorings = review.Scorings.Select(s => s.ToScoring()),
                 Picture = review.Picture

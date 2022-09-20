@@ -16,6 +16,7 @@ namespace BurgerBackend.Api.Contracts.Extensions
             {
                 Id = burgerPlace.Id,
                 AvailableBurgers = ToBurgers(burgerPlace.AvailableBurgers),
+                Information = burgerPlace.Information,
                 OpeningTime = burgerPlace.OpeningTime,
                 Location = ToLocation(burgerPlace.Location),
                 Reviews = ToReviews(burgerPlace.Reviews)

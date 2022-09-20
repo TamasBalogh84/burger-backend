@@ -13,13 +13,19 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
 
         private readonly string _containerId;
 
-        protected readonly CosmosClient CosmosClient;
+        private readonly PartitionKey _partitionKey;
 
+        protected readonly CosmosClient CosmosClient;
+        
         protected readonly Container Container;
 
-        protected CosmosRepositoryBase(CosmosClient client, string databaseId, string containerId, ILogger<CosmosRepositoryBase<TEntity>> logger)
+        protected CosmosRepositoryBase(CosmosClient client, string databaseId, string containerId, string partitionKey, ILogger<CosmosRepositoryBase<TEntity>> logger)
         {
             CosmosClient = client ?? throw new ArgumentNullException(nameof(client));
+
+            _partitionKey = string.IsNullOrEmpty(partitionKey)
+                ? throw new ArgumentNullException(nameof(partitionKey))
+                : new PartitionKey(partitionKey);
 
             _ = string.IsNullOrEmpty(databaseId)
                 ? throw new ArgumentNullException(nameof(databaseId))
@@ -34,9 +40,7 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             Container = CosmosClient.GetContainer(_databaseId, _containerId);
         }
 
-        public virtual PartitionKey ResolvePartitionKey(string? partitionKeyArea) => PartitionKey.Null;
-
-        public async Task<TEntity?> GetByIdAsync(Guid id, string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        public async Task<TEntity?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
             TEntity? result = default;
 
@@ -44,7 +48,7 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             {
                 var response = await Container.ReadItemAsync<TEntity>(
                     id.ToString(),
-                    ResolvePartitionKey(partitionKeyArea),
+                    _partitionKey,
                     cancellationToken: cancellationToken);
 
                 return response?.Resource;
@@ -57,11 +61,11 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             return result;
         }
 
-        public async Task<IList<TEntity>> GetAllAsync(string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        public async Task<IList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
         {
             var result = new List<TEntity>();
             var queryDefinition = new QueryDefinition("SELECT * FROM c");
-            var queryRequestOptions = new QueryRequestOptions { PartitionKey = ResolvePartitionKey(partitionKeyArea) };
+            var queryRequestOptions = new QueryRequestOptions { PartitionKey = _partitionKey };
 
             try
             {
@@ -73,14 +77,14 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
             catch (CosmosException ex)
             {
-                _logger.LogWarning(ex, $"Unable to retrieve entities for partitionKey '{ResolvePartitionKey(partitionKeyArea)}' in `{_databaseId}.{_containerId}`.");
+                _logger.LogWarning(ex, $"Unable to retrieve entities for partitionKey '{_partitionKey}' in `{_databaseId}.{_containerId}`.");
                 return result;
             }
 
             return result;
         }
 
-        public async Task<TEntity> StoreAsync(TEntity entity, string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        public async Task<TEntity> StoreAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             if (entity is null)
             {
@@ -89,11 +93,11 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
 
             try
             {
-                entity.PartitionKey = GetPartitionKeyFromPartitionKeyStruct(ResolvePartitionKey(partitionKeyArea));
+                entity.PartitionKey = GetPartitionKeyFromPartitionKeyStruct(_partitionKey);
 
                 var response = await Container.UpsertItemAsync(
                     entity,
-                    ResolvePartitionKey(partitionKeyArea),
+                    _partitionKey,
                     cancellationToken: cancellationToken);
 
                 return response.Resource;
@@ -105,13 +109,13 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
         }
 
-        public async Task<bool> DeleteAsync(Guid id, string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        public async Task<bool> DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             try
             {
                 var response = await Container.DeleteItemAsync<TEntity>(
                     id.ToString(),
-                    ResolvePartitionKey(partitionKeyArea),
+                    _partitionKey,
                     cancellationToken: cancellationToken);
 
                 return response.StatusCode == HttpStatusCode.NoContent;
@@ -128,7 +132,7 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
         }
 
-        public async Task CreateAsync(TEntity entity, string? partitionKeyArea = null, CancellationToken cancellationToken = default)
+        public async Task CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
         {
             if (entity is null)
             {
@@ -137,14 +141,11 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
 
             try
             {
-                var partitionKey = ResolvePartitionKey(partitionKeyArea);
-                var partitionKeyFromPartitionKeyStruct = GetPartitionKeyFromPartitionKeyStruct(partitionKey);
-
-                entity.PartitionKey = partitionKeyFromPartitionKeyStruct;
+                entity.PartitionKey = GetPartitionKeyFromPartitionKeyStruct(_partitionKey);
 
                 await Container.CreateItemAsync(
                     entity,
-                    partitionKey,
+                    _partitionKey,
                     new ItemRequestOptions { EnableContentResponseOnWrite = false },
                     cancellationToken: cancellationToken);
             }
@@ -155,10 +156,10 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
             }
         }
 
-        public string GetPartitionKeyFromPartitionKeyStruct(PartitionKey input)
-    => input
-        .ToString()
-        .Replace("[\"", string.Empty, StringComparison.Ordinal)
-        .Replace("\"]", string.Empty, StringComparison.Ordinal);
+        private string GetPartitionKeyFromPartitionKeyStruct(PartitionKey input)
+            => input
+                .ToString()
+                .Replace("[\"", string.Empty, StringComparison.Ordinal)
+                .Replace("\"]", string.Empty, StringComparison.Ordinal);
     }
 }
