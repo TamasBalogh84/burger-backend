@@ -16,20 +16,20 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }
 
-        public async Task<GetAllPlacesResult> ExecuteAsync(CancellationToken cancellationToken = default)
+        public async Task<GetAllPlacesResult> ExecuteAsync(bool skipReviews, CancellationToken cancellationToken = default)
         {
             try
             {
-                var result = await _burgerPlacesRepository.GetAllAsync(cancellationToken);
+                var result = skipReviews 
+                    ? await _burgerPlacesRepository.GetAllPlacesWithoutReviews(cancellationToken) 
+                    : await _burgerPlacesRepository.GetAllAsync(cancellationToken);
 
-                if (!result.Any())
-                {
-                    var logMessage = "No burger places found!";
-                    _logger.LogInformation(logMessage);
-                    return GetAllPlacesResult.NotFound(logMessage);
-                }
+                if (result.Any()) return GetAllPlacesResult.Ok(result.ToBurgerPlaces());
 
-                return GetAllPlacesResult.Ok(result.ToBurgerPlaces());
+                var logMessage = "No burger places found!";
+                _logger.LogInformation(logMessage);
+                return GetAllPlacesResult.NotFound(logMessage);
+
             }
             catch (Exception e)
             {

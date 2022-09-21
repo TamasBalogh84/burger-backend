@@ -4,6 +4,6 @@ namespace BurgerBackend.Api.Contracts.Handlers.Abstract
 {
     public interface IGetAllPlacesHandler
     {
-        Task<GetAllPlacesResult> ExecuteAsync(CancellationToken cancellationToken = default);
+        Task<GetAllPlacesResult> ExecuteAsync(bool skipReviews, CancellationToken cancellationToken = default);
     }
 }

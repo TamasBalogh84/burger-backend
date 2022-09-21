@@ -1,9 +1,7 @@
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
 using BurgerBackend.Api.Contracts.Handlers.Concrete;
 using BurgerBackend.Domain.Config;
-using BurgerBackend.Domain.Entities.Cosmos;
 using BurgerBackend.Domain.Repositories.Cosmos;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Options;
@@ -16,11 +14,11 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
 
 builder.Host.ConfigureAppConfiguration(options =>
-{
-    options.SetBasePath(Directory.GetCurrentDirectory())
-    .AddJsonFile("appsettings.Development.json", optional: true, reloadOnChange: true)
-    .AddEnvironmentVariables();
-})
+    {
+        options.SetBasePath(Directory.GetCurrentDirectory())
+            .AddJsonFile("appsettings.Development.json", true, true)
+            .AddEnvironmentVariables();
+    })
 .ConfigureServices((hostBuilder, services) =>
 {
     services.Configure<CosmosConfiguration>(hostBuilder.Configuration.GetSection(nameof(CosmosConfiguration)));
@@ -40,6 +38,8 @@ builder.Host.ConfigureAppConfiguration(options =>
     services.AddScoped<ICreateReviewHandler, CreateReviewHandler>();
     services.AddScoped<IUpdateReviewHandler, UpdateReviewHandler>();
     services.AddScoped<IDeleteReviewHandler, DeleteReviewHandler>();
+
+    services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key");
 
     services.AddLogging(logging =>
         {

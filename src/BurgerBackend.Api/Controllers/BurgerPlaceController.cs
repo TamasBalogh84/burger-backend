@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers
 {
-    //[Authorize]
+    [Authorize]
     [ApiController]
     [Route("/api/v1/burger-places")]
     public class BurgerPlacesController : ControllerBase
@@ -15,14 +15,14 @@ namespace BurgerBackend.Api.Controllers
         [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-        public async Task<ActionResult> GetAllPlaces([FromServices] IGetAllPlacesHandler handler, CancellationToken cancellationToken)
+        public async Task<ActionResult> GetAllPlaces([FromQuery] bool skipReviews, [FromServices] IGetAllPlacesHandler handler, CancellationToken cancellationToken)
         {
             if (handler is null)
             {
                 throw new ArgumentNullException(nameof(handler));
             }
 
-            return await handler.ExecuteAsync(cancellationToken);
+            return await handler.ExecuteAsync(skipReviews, cancellationToken);
         }
 
         [HttpGet("{placeId}")]
@@ -70,6 +70,7 @@ namespace BurgerBackend.Api.Controllers
             return await handler.ExecuteAsync(parameters, cancellationToken);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPost("{placeId}/reviews")]
         [ProducesResponseType(typeof(Review), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -85,6 +86,7 @@ namespace BurgerBackend.Api.Controllers
             return await handler.ExecuteAsync(parameters, cancellationToken);
         }
 
+        [ValidateAntiForgeryToken]
         [HttpPut("{placeId}/reviews/{reviewId}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -99,7 +101,7 @@ namespace BurgerBackend.Api.Controllers
 
             return await handler.ExecuteAsync(parameters, cancellationToken);
         }
-
+        [ValidateAntiForgeryToken]
         [HttpDelete("{placeId}/reviews/{reviewId}")]
         [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

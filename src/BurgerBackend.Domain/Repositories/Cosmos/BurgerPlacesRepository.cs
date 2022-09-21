@@ -141,5 +141,20 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
 
            return places.Select(p => p.Reviews.FirstOrDefault(r => r.Id == reviewId)).FirstOrDefault();
         }
+
+        public async Task<IEnumerable<BurgerPlace>> GetAllPlacesWithoutReviews(CancellationToken cancellationToken)
+        {
+            var result = await GetAllAsync(cancellationToken);
+
+            return result.Select(p => new BurgerPlace()
+            {
+                Id = p.Id,
+                AvailableBurgers = p.AvailableBurgers,
+                Information = p.Information,
+                Location = p.Location,
+                OpeningTime = p.OpeningTime,
+                Reviews = Enumerable.Empty<Review>()
+            });
+        }
     }
 }

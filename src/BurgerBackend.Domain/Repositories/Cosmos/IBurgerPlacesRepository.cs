@@ -7,5 +7,7 @@ namespace BurgerBackend.Domain.Repositories.Cosmos
         Task<IEnumerable<Review>> GetReviewsByPlaceIdAsync(Guid placeId, CancellationToken cancellationToken);
 
         Task<Review?> GetReviewByIdAsync(Guid reviewId, CancellationToken cancellationToken);
+
+        Task<IEnumerable<BurgerPlace>> GetAllPlacesWithoutReviews(CancellationToken cancellationToken);
     }
 }
