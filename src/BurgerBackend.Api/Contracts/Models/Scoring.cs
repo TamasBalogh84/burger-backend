@@ -1,9 +1,8 @@
-﻿namespace BurgerBackend.Api.Contracts.Models
-{
-    public class Scoring
-    {
-        public string ScoringName { get; set; } = string.Empty;
+﻿namespace BurgerBackend.Api.Contracts.Models;
 
-        public decimal ScoreValue { get; set; }
-    }
+public class Scoring
+{
+    public string ScoringName { get; set; } = string.Empty;
+
+    public decimal ScoreValue { get; set; }
 }

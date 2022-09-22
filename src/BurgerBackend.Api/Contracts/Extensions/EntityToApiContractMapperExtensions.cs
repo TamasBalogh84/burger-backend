@@ -1,109 +1,108 @@
 ﻿using BurgerBackend.Api.Contracts.Models;
 
-namespace BurgerBackend.Api.Contracts.Extensions
+namespace BurgerBackend.Api.Contracts.Extensions;
+
+public static class EntityToApiContractMapperExtensions
 {
-    public static class EntityToApiContractMapperExtensions
+
+    public static BurgerPlace ToBurgerPlace(this Domain.Entities.Cosmos.BurgerPlace burgerPlace)
     {
-
-        public static BurgerPlace ToBurgerPlace(this Domain.Entities.Cosmos.BurgerPlace burgerPlace)
+        if (burgerPlace is null)
         {
-            if (burgerPlace is null)
-            {
-                throw new ArgumentNullException(nameof(burgerPlace));
-            }
-
-            return new BurgerPlace
-            {
-                Id = burgerPlace.Id,
-                AvailableBurgers = ToBurgers(burgerPlace.AvailableBurgers),
-                Information = burgerPlace.Information,
-                OpeningTime = burgerPlace.OpeningTime,
-                Location = ToLocation(burgerPlace.Location),
-                Reviews = ToReviews(burgerPlace.Reviews)
-            };
+            throw new ArgumentNullException(nameof(burgerPlace));
         }
 
-        public static IEnumerable<BurgerPlace> ToBurgerPlaces(this IEnumerable<Domain.Entities.Cosmos.BurgerPlace> burgerPlaces)
+        return new BurgerPlace
         {
-            if (burgerPlaces is null)
-            {
-                throw new ArgumentNullException(nameof(burgerPlaces));
-            }
+            Id = burgerPlace.Id,
+            AvailableBurgers = ToBurgers(burgerPlace.AvailableBurgers),
+            Information = burgerPlace.Information,
+            OpeningTime = burgerPlace.OpeningTime,
+            Location = ToLocation(burgerPlace.Location),
+            Reviews = ToReviews(burgerPlace.Reviews)
+        };
+    }
 
-            return burgerPlaces.Select(p => p.ToBurgerPlace());
+    public static IEnumerable<BurgerPlace> ToBurgerPlaces(this IEnumerable<Domain.Entities.Cosmos.BurgerPlace> burgerPlaces)
+    {
+        if (burgerPlaces is null)
+        {
+            throw new ArgumentNullException(nameof(burgerPlaces));
         }
 
-        public static IEnumerable<Burger> ToBurgers(this IEnumerable<Domain.Entities.Cosmos.Burger> burgers)
-        {
-            if (burgers is null)
-            {
-                throw new ArgumentNullException(nameof(burgers));
-            }
+        return burgerPlaces.Select(p => p.ToBurgerPlace());
+    }
 
-            return burgers
-                .Select(b => new Burger
-                    {
-                        Name = b.Name,
-                        Price = b.Price
-                    })
-                .ToList();
+    public static IEnumerable<Burger> ToBurgers(this IEnumerable<Domain.Entities.Cosmos.Burger> burgers)
+    {
+        if (burgers is null)
+        {
+            throw new ArgumentNullException(nameof(burgers));
         }
 
-        public static Location ToLocation(this Domain.Entities.Cosmos.Location location)
-        {
-            if (location is null)
+        return burgers
+            .Select(b => new Burger
             {
-                throw new ArgumentNullException(nameof(location));
-            }
+                Name = b.Name,
+                Price = b.Price
+            })
+            .ToList();
+    }
 
-            return new Location
-            {
-                Address = location.Address, 
-                City = location.City, 
-                Coordinates = location.Coordinates
-            };
+    public static Location ToLocation(this Domain.Entities.Cosmos.Location location)
+    {
+        if (location is null)
+        {
+            throw new ArgumentNullException(nameof(location));
         }
 
-        public static IEnumerable<Review> ToReviews(this IEnumerable<Domain.Entities.Cosmos.Review> reviews)
+        return new Location
         {
-            if (reviews is null)
-            {
-                throw new ArgumentNullException(nameof(reviews));
-            }
+            Address = location.Address, 
+            City = location.City, 
+            Coordinates = location.Coordinates
+        };
+    }
 
-            return reviews
-                .Select(r => r.ToReview())
-                .ToList();
+    public static IEnumerable<Review> ToReviews(this IEnumerable<Domain.Entities.Cosmos.Review> reviews)
+    {
+        if (reviews is null)
+        {
+            throw new ArgumentNullException(nameof(reviews));
         }
 
-        public static Review ToReview(this Domain.Entities.Cosmos.Review review)
-        {
-            if (review is null)
-            {
-                throw new ArgumentNullException(nameof(review));
-            }
+        return reviews
+            .Select(r => r.ToReview())
+            .ToList();
+    }
 
-            return new Review
-            {
-                Id = review.Id,
-                ReviewerId = review.ReviewerId,
-                Scorings = review.Scorings.ToScorings(),
-                Picture = review.Picture
-            };
+    public static Review ToReview(this Domain.Entities.Cosmos.Review review)
+    {
+        if (review is null)
+        {
+            throw new ArgumentNullException(nameof(review));
         }
 
-        public static IEnumerable<Scoring> ToScorings(this IEnumerable<Domain.Entities.Cosmos.Scoring> scorings)
+        return new Review
         {
-            if (scorings is null)
-            {
-                throw new ArgumentNullException(nameof(scorings));
-            }
+            Id = review.Id,
+            ReviewerId = review.ReviewerId,
+            Scorings = review.Scorings.ToScorings(),
+            Picture = review.Picture
+        };
+    }
 
-            return scorings.Select(s => new Scoring
-            {
-                ScoringName = s.ScoringName,
-                ScoreValue = s.ScoreValue
-            });
+    public static IEnumerable<Scoring> ToScorings(this IEnumerable<Domain.Entities.Cosmos.Scoring> scorings)
+    {
+        if (scorings is null)
+        {
+            throw new ArgumentNullException(nameof(scorings));
         }
+
+        return scorings.Select(s => new Scoring
+        {
+            ScoringName = s.ScoringName,
+            ScoreValue = s.ScoreValue
+        });
     }
 }

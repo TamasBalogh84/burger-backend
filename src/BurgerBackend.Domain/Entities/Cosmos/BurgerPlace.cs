@@ -1,22 +1,21 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BurgerBackend.Domain.Entities.Cosmos
+namespace BurgerBackend.Domain.Entities.Cosmos;
+
+public class BurgerPlace : Entity
 {
-    public class BurgerPlace : Entity
-    {
-        [JsonPropertyName("availableBurgers")]
-        public IEnumerable<Burger> AvailableBurgers { get; set; }
+    [JsonPropertyName("availableBurgers")]
+    public IEnumerable<Burger> AvailableBurgers { get; set; }
 
-        [JsonPropertyName("information")]
-        public string Information { get; set; } = string.Empty;
+    [JsonPropertyName("information")]
+    public string Information { get; set; } = string.Empty;
 
-        [JsonPropertyName("location")]
-        public Location Location { get; set; }
+    [JsonPropertyName("location")]
+    public Location Location { get; set; }
 
-        [JsonPropertyName("openingTime")]
-        public string OpeningTime { get; set; } = string.Empty;
+    [JsonPropertyName("openingTime")]
+    public string OpeningTime { get; set; } = string.Empty;
 
-        [JsonPropertyName("reviews")]
-        public IEnumerable<Review> Reviews { get; set; }
-    }
+    [JsonPropertyName("reviews")]
+    public IEnumerable<Review> Reviews { get; set; }
 }

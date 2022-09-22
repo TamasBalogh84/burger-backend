@@ -1,9 +1,8 @@
 ﻿using BurgerBackend.Api.Contracts.Results;
 
-namespace BurgerBackend.Api.Contracts.Handlers.Abstract
+namespace BurgerBackend.Api.Contracts.Handlers.Abstract;
+
+public interface IGetAllPlacesHandler
 {
-    public interface IGetAllPlacesHandler
-    {
-        Task<GetAllPlacesResult> ExecuteAsync(bool skipReviews, CancellationToken cancellationToken = default);
-    }
+    Task<GetAllPlacesResult> ExecuteAsync(bool skipReviews, CancellationToken cancellationToken = default);
 }

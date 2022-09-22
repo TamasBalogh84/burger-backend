@@ -1,12 +1,11 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Mvc;
 
-namespace BurgerBackend.Api.Contracts.Parameters
+namespace BurgerBackend.Api.Contracts.Parameters;
+
+public class GetReviewsByPlaceIdParameters
 {
-    public class GetReviewsByPlaceIdParameters
-    {
-        [FromRoute(Name = "placeId")]
-        [Required]
-        public Guid PlaceId { get; set; }
-    }
+    [FromRoute(Name = "placeId")]
+    [Required]
+    public Guid PlaceId { get; set; }
 }

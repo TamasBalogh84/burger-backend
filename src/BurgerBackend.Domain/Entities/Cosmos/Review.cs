@@ -1,19 +1,18 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace BurgerBackend.Domain.Entities.Cosmos
+namespace BurgerBackend.Domain.Entities.Cosmos;
+
+public class Review
 {
-    public class Review
-    {
-        [JsonPropertyName("id")] 
-        public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonPropertyName("id")] 
+    public Guid Id { get; set; } = Guid.NewGuid();
 
-        [JsonPropertyName("reviewerId")]
-        public Guid ReviewerId { get; set; }
+    [JsonPropertyName("reviewerId")]
+    public Guid ReviewerId { get; set; }
 
-        [JsonPropertyName("scorings")]
-        public IEnumerable<Scoring> Scorings { get; set; }
+    [JsonPropertyName("scorings")]
+    public IEnumerable<Scoring> Scorings { get; set; }
 
-        [JsonPropertyName("pictureLink")]
-        public string Picture { get; set; }
-    }
+    [JsonPropertyName("pictureLink")]
+    public string Picture { get; set; }
 }

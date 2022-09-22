@@ -1,27 +1,26 @@
 ﻿using BurgerBackend.Domain.Entities.Cosmos;
 
-namespace BurgerBackend.Api.Contracts.Extensions
-{
-    public static class ApiContractToEntityMapperExtensions
-    {
-        public static Review ToReview(this Models.Review review)
-        {
-            return new Review
-            {
-                Id = review.Id,
-                ReviewerId = review.ReviewerId,
-                Scorings = review.Scorings.Select(s => s.ToScoring()),
-                Picture = review.Picture
-            };
-        }
+namespace BurgerBackend.Api.Contracts.Extensions;
 
-        public static Scoring ToScoring(this Models.Scoring scoring)
+public static class ApiContractToEntityMapperExtensions
+{
+    public static Review ToReview(this Models.Review review)
+    {
+        return new Review
         {
-            return new Scoring
-            {
-                ScoringName = scoring.ScoringName,
-                ScoreValue = scoring.ScoreValue
-            };
-        }
+            Id = review.Id,
+            ReviewerId = review.ReviewerId,
+            Scorings = review.Scorings.Select(s => s.ToScoring()),
+            Picture = review.Picture
+        };
+    }
+
+    public static Scoring ToScoring(this Models.Scoring scoring)
+    {
+        return new Scoring
+        {
+            ScoringName = scoring.ScoringName,
+            ScoreValue = scoring.ScoreValue
+        };
     }
 }
