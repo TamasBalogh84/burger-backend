@@ -14,5 +14,5 @@ public class Review
     public IEnumerable<Scoring> Scorings { get; set; }
 
     [JsonPropertyName("pictureLink")]
-    public string Picture { get; set; }
+    public string ImageUrl { get; set; } = string.Empty;
 }

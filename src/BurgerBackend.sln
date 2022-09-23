@@ -5,7 +5,11 @@ VisualStudioVersion = 17.1.32319.34
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurgerBackend.Api", "BurgerBackend.Api\BurgerBackend.Api.csproj", "{FEE77AEF-55DE-4A2B-801C-9E019A914404}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurgerBackend.Domain", "BurgerBackend.Domain\BurgerBackend.Domain.csproj", "{D3FBF184-ADBE-45C7-9F01-763D649C757B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BurgerBackend.Domain", "BurgerBackend.Domain\BurgerBackend.Domain.csproj", "{D3FBF184-ADBE-45C7-9F01-763D649C757B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{65F56129-C9B9-4DE3-85AE-6912B4396465}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BurgerBackend.Api.Tests", "BurgerBackend.Domain.Tests\BurgerBackend.Api.Tests.csproj", "{5C77A774-D161-4F2C-BF0B-11BA302F7662}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,9 +25,16 @@ Global
 		{D3FBF184-ADBE-45C7-9F01-763D649C757B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3FBF184-ADBE-45C7-9F01-763D649C757B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3FBF184-ADBE-45C7-9F01-763D649C757B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5C77A774-D161-4F2C-BF0B-11BA302F7662}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5C77A774-D161-4F2C-BF0B-11BA302F7662}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5C77A774-D161-4F2C-BF0B-11BA302F7662}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5C77A774-D161-4F2C-BF0B-11BA302F7662}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5C77A774-D161-4F2C-BF0B-11BA302F7662} = {65F56129-C9B9-4DE3-85AE-6912B4396465}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {C616A099-0AF3-45E1-8090-C36BF7978820}

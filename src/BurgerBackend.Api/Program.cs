@@ -1,9 +1,12 @@
+using Azure.Core;
+using Azure.Identity;
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
 using BurgerBackend.Api.Contracts.Handlers.Concrete;
 using BurgerBackend.Domain.Config;
 using BurgerBackend.Domain.Repositories.Cosmos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos.Fluent;
+using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
 using Microsoft.Identity.Web;
 
@@ -30,6 +33,20 @@ builder.Host.ConfigureAppConfiguration(options =>
         return clientBuilder.Build();
     });
 
+    services.AddAzureClients(clientBuilder =>
+    {
+        clientBuilder.AddBlobServiceClient(builder.Configuration.GetSection("AzureStorageConfiguration")).ConfigureOptions(
+            options =>
+            {
+                options.Retry.Mode = RetryMode.Exponential;
+                options.Retry.MaxDelay = TimeSpan.FromSeconds(60);
+            });
+
+        clientBuilder.ConfigureDefaults(builder.Configuration.GetSection("AzureDefaults"));
+
+        clientBuilder.UseCredential(new DefaultAzureCredential());
+    });
+
     services.AddScoped<IBurgerPlacesRepository, BurgerPlacesRepository>();
     services.AddScoped<IGetAllPlacesHandler, GetAllPlacesHandler>();
     services.AddScoped<IGetPlaceByIdHandler, GetPlaceByIdHandler>();
@@ -38,6 +55,7 @@ builder.Host.ConfigureAppConfiguration(options =>
     services.AddScoped<ICreateReviewHandler, CreateReviewHandler>();
     services.AddScoped<IUpdateReviewHandler, UpdateReviewHandler>();
     services.AddScoped<IDeleteReviewHandler, DeleteReviewHandler>();
+    services.AddScoped<IAddImageHandler, AddImageHandler>();
 
     services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key");
 

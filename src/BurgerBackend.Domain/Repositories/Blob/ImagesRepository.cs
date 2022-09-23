@@ -1,37 +1,52 @@
-﻿using Azure.Storage;
+﻿using System.Text;
+using Azure.Storage;
 using Azure.Storage.Blobs;
 using BurgerBackend.Domain.Config;
-using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
 namespace BurgerBackend.Domain.Repositories.Blob;
 
 public class ImagesRepository : IImagesRepository
 {
+    private readonly BlobServiceClient _client;
+
+    private readonly ILogger<ImagesRepository> _logger;
+
+    private const string HttpPrefix = "https://";
+
+    private const string BlobMainAddress = ".blob.core.windows.net/";
+
     private readonly AzureStorageConfiguration _storageConfig;
 
-    public ImagesRepository(IOptions<AzureStorageConfiguration> storageOptions)
+    public ImagesRepository(BlobServiceClient client, IOptions<AzureStorageConfiguration> storageOptions, ILogger<ImagesRepository> logger)
     {
-        _storageConfig = storageOptions.Value;
+        _client = client;
+        _logger = logger ?? throw new ArgumentNullException(nameof(logger));
+        _storageConfig = storageOptions.Value ?? throw new ArgumentNullException(nameof(storageOptions));
     }
 
     public async Task<string> UploadFileToStorage(Stream fileStream, string fileName, CancellationToken cancellationToken)
     {
         string uniqueFileName = Guid.NewGuid() + "_" + fileName;
 
-        // Create a URI to the blob
-        Uri blobUri = new Uri("https://" +
-                              _storageConfig.AccountName +
-                              ".blob.core.windows.net/" +
-                              _storageConfig.ImageContainer +
-                              "/" + uniqueFileName);
+        var stringBuilder = new StringBuilder();
 
-        StorageSharedKeyCredential storageCredentials =
-            new StorageSharedKeyCredential(_storageConfig.AccountName, _storageConfig.AccountKey);
+        stringBuilder
+            .Append(HttpPrefix)
+            .Append(_storageConfig.AccountName)
+            .Append(BlobMainAddress)
+            .Append(_storageConfig.ImageContainerName)
+            .Append("/")
+            .Append(uniqueFileName);
 
-        BlobClient blobClient = new BlobClient(blobUri, storageCredentials);
+        var containerClient = _client.GetBlobContainerClient(_storageConfig.ImageContainerName);
 
-        await blobClient.UploadAsync(fileStream);
+        Uri blobUri = new(stringBuilder.ToString());
+
+        StorageSharedKeyCredential storageCredentials = new(_storageConfig.AccountName, _storageConfig.AccountKey);
+
+        await containerClient.UploadBlobAsync(uniqueFileName, fileStream, cancellationToken);
 
         return blobUri.ToString();
     }

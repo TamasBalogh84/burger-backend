@@ -10,7 +10,6 @@ namespace BurgerBackend.Api.Controllers;
 public class ImagesController
 {
     [HttpPost, DisableRequestSizeLimit]
-    [Consumes("multipart/form-data")]
     [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]

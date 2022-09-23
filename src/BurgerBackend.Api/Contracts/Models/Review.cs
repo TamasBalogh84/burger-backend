@@ -8,5 +8,5 @@ public class Review
 
     public IEnumerable<Scoring> Scorings { get; set; }
 
-    public string Picture { get; set; }
+    public string ImageUrl { get; set; }
 }

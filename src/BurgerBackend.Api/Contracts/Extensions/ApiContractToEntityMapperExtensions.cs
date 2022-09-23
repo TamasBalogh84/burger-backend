@@ -11,7 +11,7 @@ public static class ApiContractToEntityMapperExtensions
             Id = review.Id,
             ReviewerId = review.ReviewerId,
             Scorings = review.Scorings.Select(s => s.ToScoring()),
-            Picture = review.Picture
+            ImageUrl = review.ImageUrl
         };
     }
 

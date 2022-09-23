@@ -43,7 +43,7 @@ public class UpdateReviewHandler : IUpdateReviewHandler
             }
 
             review.Scorings = parameters.Review.Scorings.Select(s => s.ToScoring());
-            review.Picture = parameters.Review.Picture;
+            review.ImageUrl = parameters.Review.ImageUrl;
 
             await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
 

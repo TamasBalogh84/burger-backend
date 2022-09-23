@@ -26,7 +26,7 @@ public class CreateReviewHandler : ICreateReviewHandler
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _))
+            if (parameters.PlaceId == Guid.Empty)
             {
                 const string logMessage = "Invalid Guid!";
                 _logger.LogWarning(logMessage);
