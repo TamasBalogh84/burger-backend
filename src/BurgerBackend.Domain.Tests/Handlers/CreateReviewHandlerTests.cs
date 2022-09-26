@@ -4,128 +4,110 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using Atc.Rest.FluentAssertions;
-using Atc.Test;
-using AutoFixture.Xunit2;
 using BurgerBackend.Api.Contracts.Extensions;
 using BurgerBackend.Api.Contracts.Handlers.Concrete;
-using BurgerBackend.Api.Contracts.Parameters;
-using BurgerBackend.Domain.Entities.Cosmos;
+using BurgerBackend.Api.Tests.TestData;
 using BurgerBackend.Domain.Repositories.Cosmos;
-using NSubstitute;
-using NSubstitute.ExceptionExtensions;
+using Microsoft.Extensions.Logging;
+using Moq;
 using NUnit.Framework;
+using BurgerPlace = BurgerBackend.Domain.Entities.Cosmos.BurgerPlace;
 
 namespace BurgerBackend.Api.Tests.Handlers
 {
     public class CreateReviewHandlerTests
     {
-        [Theory, AutoNSubstituteData]
-        public async Task Should_Return_Ok(
-            [Frozen] IBurgerPlacesRepository repository,
-            CreateReviewParameters parameters,
-            CreateReviewHandler sut,
-            BurgerPlace place,
-            CancellationToken cancellationToken)
+        private readonly Mock<IBurgerPlacesRepository> _repositoryMock = new();
+
+        private readonly Mock<ILogger<CreateReviewHandler>> _loggerMock = new();
+
+        [SetUp]
+        public void Setup()
         {
-            // Arrange
+            _repositoryMock.Reset();
+            _loggerMock.Reset();
+        }
 
-            var updatePlace = new BurgerPlace
-            {
-                AvailableBurgers = place.AvailableBurgers,
-                Id = place.Id,
-                Information = place.Information,
-                Location = place.Location,
-                OpeningTime = place.OpeningTime,
-                PartitionKey = place.PartitionKey,
-                Reviews = place.Reviews.Append(parameters.Review.ToReview())
-            };
+        [TestCaseSource(typeof(BurgerPlaceTestData), nameof(BurgerPlaceTestData.HappyPathTestCases))]
+        public async Task Should_Return_Ok(BurgerPlaceTestData testData)
+        {
+            // ARRANGE
+            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
 
-            repository
-                .GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken)
-                .ReturnsForAnyArgs(place);
+            var data = testData.AsBurgerPlace();
 
-            repository.StoreAsync(updatePlace).ReturnsForAnyArgs(updatePlace);
+            _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(data);
 
-            // Act
-            var actual = await sut.ExecuteAsync(parameters, cancellationToken);
+            data.Reviews = data.Reviews.Append(parameters.Review.ToReview());
 
-            // Assert
-            await repository
-                .Received(1)
-                .StoreAsync(place,Arg.Any<CancellationToken>());
+            _repositoryMock.Setup(e => e.StoreAsync(data, It.IsAny<CancellationToken>()))
+                .ReturnsAsync(data);
 
-            actual
-                .Should()
-                .BeOkResult()
+            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+
+            // ACT
+
+            var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
+
+            // ASSERT
+            result.Should().BeOkResult()
                 .WithContent(parameters.Review);
         }
 
-        [Theory, AutoNSubstituteData]
-        public async Task Should_Return_BadRequest(
-            [Frozen] IBurgerPlacesRepository repository,
-            CreateReviewParameters parameters,
-            CreateReviewHandler sut,
-            CancellationToken cancellationToken)
+        [Test]
+        public async Task Should_Return_BadRequest()
         {
-            // Arrange
+            // ARRANGE
+            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
+
             parameters.PlaceId = Guid.Empty;
 
-            // Act
-            var actual = await sut.ExecuteAsync(parameters, cancellationToken);
+            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
 
-            // Assert
-            await repository
-                .DidNotReceive()
-                .StoreAsync(Arg.Any<BurgerPlace>(), Arg.Any<CancellationToken>());
+            // ACT
+            var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
 
-            actual
-                .Should()
-                .BeBadRequestResult();
+            // ASSERT
+            result.Should().BeBadRequestResult().WithErrorMessage("Invalid parameters!");
         }
 
-        [Theory, AutoNSubstituteData]
-        public async Task Should_Return_NotFound(
-            [Frozen] IBurgerPlacesRepository repository,
-            CreateReviewParameters parameters,
-            CreateReviewHandler sut,
-            CancellationToken cancellationToken)
+        [Test]
+        public async Task Should_Return_NotFound()
         {
-            // Arrange
-            repository
-                .GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken)
-                .ReturnsForAnyArgs((Task<BurgerPlace?>)null);
+            // ARRANGE
+            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
 
-            // Act
-            var actual = await sut.ExecuteAsync(parameters, cancellationToken);
+            _repositoryMock.Reset();
 
-            // Assert
-            await repository
-                .DidNotReceive()
-                .StoreAsync(Arg.Any<BurgerPlace>(), Arg.Any<CancellationToken>());
+            _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync((BurgerPlace?)null);
 
-            actual
-                .Should()
-                .BeNotFoundResult()
-                .WithErrorMessage($"Burger place not found with id: {parameters.PlaceId}");
+            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+
+            // ACT
+            var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
+
+            // ASSERT
+            result.Should().BeNotFoundResult().WithErrorMessage($"Burger place not found with id: {parameters.PlaceId}");
         }
 
-        [Theory]
-        public async Task Should_Return_InternalServerError(
-            [Frozen] IBurgerPlacesRepository repository,
-            CreateReviewParameters parameters,
-            CreateReviewHandler sut,
-            CancellationToken cancellationToken)
+        [Test]
+        public async Task Should_Return_InternalServerError()
         {
-            // Arrange
-            repository
-                .GetByIdAsync(Arg.Any<string>(), cancellationToken)
-                .ThrowsForAnyArgs<Exception>();
+            // ARRANGE
+            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
 
-            // Act
-            var actual = await sut.ExecuteAsync(parameters, cancellationToken);
+            _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
+                .ThrowsAsync(new Exception());
 
-            // Assert
-            actual
+            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+
+            // ACT
+            var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
+
+            // ASSERT
+            result
                 .Should()
                 .BeContentResult()
                 .WithStatusCode(HttpStatusCode.InternalServerError);

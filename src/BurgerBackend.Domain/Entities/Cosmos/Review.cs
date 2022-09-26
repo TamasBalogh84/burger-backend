@@ -8,7 +8,7 @@ public class Review
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [JsonPropertyName("reviewerId")]
-    public Guid ReviewerId { get; set; }
+    public string ReviewerId { get; set; }
 
     [JsonPropertyName("scorings")]
     public IEnumerable<Scoring> Scorings { get; set; }

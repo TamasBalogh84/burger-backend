@@ -21,14 +21,9 @@ public class CreateReviewHandler : ICreateReviewHandler
     {
         try
         {
-            if (parameters is null)
-            {
-                throw new ArgumentNullException(nameof(parameters));
-            }
-
             if (parameters.PlaceId == Guid.Empty)
             {
-                const string logMessage = "Invalid Guid!";
+                const string logMessage = "Invalid parameters!";
                 _logger.LogWarning(logMessage);
                 return CreateReviewResult.BadRequest(logMessage);
             }
@@ -44,9 +39,9 @@ public class CreateReviewHandler : ICreateReviewHandler
 
             place.Reviews = place.Reviews.Append(newReview);
 
-            await _burgerPlacesRepository.StoreAsync(place, cancellationToken);
+            var result = await _burgerPlacesRepository.StoreAsync(place, cancellationToken);
 
-            return CreateReviewResult.Ok(newReview.ToReview());
+            return CreateReviewResult.Ok(result.Reviews.FirstOrDefault(r => r.Id == newReview.Id)?.ToReview());
         }
         catch (Exception e)
         {

@@ -8,5 +8,5 @@ public class Burger
     public string Name { get; set; } = string.Empty;
 
     [JsonPropertyName("price")]
-    public decimal? Price { get; set; }
+    public double Price { get; set; }
 }

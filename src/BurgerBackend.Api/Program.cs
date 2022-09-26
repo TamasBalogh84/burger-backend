@@ -57,7 +57,7 @@ builder.Host.ConfigureAppConfiguration(options =>
     services.AddScoped<IDeleteReviewHandler, DeleteReviewHandler>();
     services.AddScoped<IAddImageHandler, AddImageHandler>();
 
-    services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key");
+    services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key"); // TODO: Change this
 
     services.AddLogging(logging =>
         {

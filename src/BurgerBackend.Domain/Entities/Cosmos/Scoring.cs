@@ -8,5 +8,5 @@ public class Scoring
     public string ScoringName { get; set; } = string.Empty;
 
     [JsonPropertyName("scoringValue")]
-    public decimal ScoreValue { get; set; }
+    public double ScoreValue { get; set; }
 }

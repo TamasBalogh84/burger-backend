@@ -9,7 +9,7 @@ public class CreateReviewResult :ResultBase
 {
     private CreateReviewResult(ActionResult result) : base(result) { }
 
-    public static CreateReviewResult Ok(Review response) => new (new OkObjectResult(response));
+    public static CreateReviewResult Ok(Review? response) => new (new OkObjectResult(response));
 
     public static CreateReviewResult BadRequest(string? message = null) => new (ResultFactory.CreateContentResultWithValidationProblemDetails(HttpStatusCode.BadRequest, message));
 
