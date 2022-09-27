@@ -6,11 +6,6 @@ namespace BurgerBackend.Api.Contracts.Parameters;
 
 public class CreateReviewParameters
 {
-    public CreateReviewParameters(Review review)
-    {
-        Review = review;
-    }
-
     [FromRoute(Name = "placeId")]
     [Required]
     public Guid PlaceId { get; set; }
@@ -18,10 +13,4 @@ public class CreateReviewParameters
     [FromBody]
     [Required]
     public Review Review { get; set; }
-
-    public override string ToString()
-    {
-        return $"{nameof(PlaceId)}: {PlaceId}";
-    }
-
 }

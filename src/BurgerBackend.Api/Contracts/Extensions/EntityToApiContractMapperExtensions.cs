@@ -85,7 +85,7 @@ public static class EntityToApiContractMapperExtensions
 
         return new Review
         {
-            Id = review.Id,
+            ReviewId = review.Id,
             ReviewerId = review.ReviewerId,
             Scorings = review.Scorings.ToScorings(),
             ImageUrl = review.ImageUrl

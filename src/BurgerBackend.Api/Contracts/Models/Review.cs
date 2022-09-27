@@ -2,7 +2,7 @@
 
 public class Review
 {
-    public Guid Id { get; set; } = Guid.NewGuid();
+    public Guid ReviewId { get; set; } = Guid.NewGuid();
 
     public string ReviewerId { get; set; }
 

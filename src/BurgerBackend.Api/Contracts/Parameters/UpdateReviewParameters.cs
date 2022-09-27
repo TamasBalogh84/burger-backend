@@ -6,9 +6,9 @@ namespace BurgerBackend.Api.Contracts.Parameters;
 
 public class UpdateReviewParameters
 {
-    public UpdateReviewParameters(Review review)
+    public UpdateReviewParameters(ReviewRequest reviewRequest)
     {
-        Review = review;
+        ReviewRequest = reviewRequest;
     }
 
     [FromRoute(Name = "placeId")]
@@ -21,5 +21,5 @@ public class UpdateReviewParameters
 
     [FromBody]
     [Required]
-    public Review Review { get; }
+    public ReviewRequest ReviewRequest { get; }
 }

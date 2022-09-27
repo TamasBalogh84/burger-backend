@@ -8,4 +8,10 @@ public class GetReviewsByPlaceIdParameters
     [FromRoute(Name = "placeId")]
     [Required]
     public Guid PlaceId { get; set; }
+
+    [FromQuery(Name = "pageNumber")]
+    public int PageNumber { get; set; }
+
+    [FromQuery(Name = "pageSize")]
+    public int PageSize { get; set; }
 }

@@ -3,6 +3,7 @@ using Azure.Identity;
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
 using BurgerBackend.Api.Contracts.Handlers.Concrete;
 using BurgerBackend.Domain.Config;
+using BurgerBackend.Domain.Repositories.Blob;
 using BurgerBackend.Domain.Repositories.Cosmos;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos.Fluent;
@@ -48,7 +49,9 @@ builder.Host.ConfigureAppConfiguration(options =>
     });
 
     services.AddScoped<IBurgerPlacesRepository, BurgerPlacesRepository>();
+    services.AddScoped<IImagesRepository, ImagesRepository>();
     services.AddScoped<IGetAllPlacesHandler, GetAllPlacesHandler>();
+    services.AddScoped<ICreatePlaceHandler, CreatePlaceHandler>();
     services.AddScoped<IGetPlaceByIdHandler, GetPlaceByIdHandler>();
     services.AddScoped<IGetReviewsByPlaceIdHandler, GetReviewsByPlaceIdHandler>();
     services.AddScoped<IGetReviewByIdHandler, GetReviewByIdHandler>();

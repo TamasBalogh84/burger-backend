@@ -8,9 +8,4 @@ public class GetPlaceByIdParameters
     [FromRoute(Name = "placeId")]
     [Required]
     public Guid PlaceId { get; set; }
-
-    public override string ToString()
-    {
-        return $"{nameof(PlaceId)}: {PlaceId}";
-    }
 }

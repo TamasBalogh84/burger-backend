@@ -4,7 +4,7 @@ namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Review
 {
-    [JsonPropertyName("id")] 
+    [JsonPropertyName("reviewId")] 
     public Guid Id { get; set; } = Guid.NewGuid();
 
     [JsonPropertyName("reviewerId")]
@@ -13,6 +13,6 @@ public class Review
     [JsonPropertyName("scorings")]
     public IEnumerable<Scoring> Scorings { get; set; }
 
-    [JsonPropertyName("pictureLink")]
+    [JsonPropertyName("imageUrl")]
     public string ImageUrl { get; set; } = string.Empty;
 }

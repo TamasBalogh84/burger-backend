@@ -42,8 +42,8 @@ public class UpdateReviewHandler : IUpdateReviewHandler
                 return UpdateReviewResult.NotFound($"No data found to update {parameters.PlaceId} {parameters.ReviewId}");
             }
 
-            review.Scorings = parameters.Review.Scorings.Select(s => s.ToScoring());
-            review.ImageUrl = parameters.Review.ImageUrl;
+            review.Scorings = parameters.ReviewRequest.Scorings.Select(s => s.ToScoring());
+            review.ImageUrl = parameters.ReviewRequest.ImageUrl;
 
             await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
 

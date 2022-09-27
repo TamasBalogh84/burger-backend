@@ -1,4 +1,5 @@
 ﻿using BurgerBackend.Api.Contracts.Handlers.Abstract;
+using BurgerBackend.Api.Contracts.Handlers.Concrete;
 using BurgerBackend.Api.Contracts.Models;
 using BurgerBackend.Api.Contracts.Parameters;
 using Microsoft.AspNetCore.Authorization;
@@ -6,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers;
 
-[Authorize]
+//[Authorize]
 [ApiController]
 [Route("/api/v1/burger-places")]
 public class BurgerPlacesController : ControllerBase
@@ -15,14 +16,28 @@ public class BurgerPlacesController : ControllerBase
     [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> GetAllPlaces([FromQuery] bool skipReviews, [FromServices] IGetAllPlacesHandler handler, CancellationToken cancellationToken)
+    public async Task<ActionResult> GetAllPlaces([FromQuery] GetAllPlacesParameters parameters, [FromServices] IGetAllPlacesHandler handler, CancellationToken cancellationToken)
     {
         if (handler is null)
         {
             throw new ArgumentNullException(nameof(handler));
         }
 
-        return await handler.ExecuteAsync(skipReviews, cancellationToken);
+        return await handler.ExecuteAsync(parameters.SkipReviews, cancellationToken);
+    }
+
+    [HttpPost]
+    [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> CreatePlace([FromQuery] CreatePlaceParameters parameters, [FromServices] ICreatePlaceHandler handler, CancellationToken cancellationToken)
+    {
+        if (handler is null)
+        {
+            throw new ArgumentNullException(nameof(handler));
+        }
+
+        return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
     [HttpGet("{placeId}")]
@@ -76,7 +91,7 @@ public class BurgerPlacesController : ControllerBase
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> CreateReviewAsync(CreateReviewParameters parameters, [FromServices] ICreateReviewHandler handler, CancellationToken cancellationToken)
+    public async Task<ActionResult> CreateReviewAsync([FromRoute] CreateReviewParameters parameters, [FromServices] ICreateReviewHandler handler, CancellationToken cancellationToken)
     {
         if (handler is null)
         {
@@ -86,13 +101,14 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
+
     [ValidateAntiForgeryToken]
     [HttpPut("{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> UpdateReviewAsync(UpdateReviewParameters parameters, [FromServices] IUpdateReviewHandler handler, CancellationToken cancellationToken)
+    public async Task<ActionResult> UpdateReviewAsync([FromRoute] UpdateReviewParameters parameters, [FromServices] IUpdateReviewHandler handler, CancellationToken cancellationToken)
     {
         if (handler is null)
         {
