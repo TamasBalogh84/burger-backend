@@ -35,7 +35,7 @@ public class UpdateReviewHandler : IUpdateReviewHandler
 
             var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken);
 
-            var review = place?.Reviews.First(r => r.Id == parameters.ReviewId);
+            var review = place?.Reviews.First(r => r.Id == parameters.ReviewId.ToString());
 
             if (place is null || review is null)
             {

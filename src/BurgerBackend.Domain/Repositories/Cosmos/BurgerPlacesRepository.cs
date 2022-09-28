@@ -29,7 +29,7 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
     {
         var places = await GetAllAsync(cancellationToken);
 
-        return places.Select(p => p.Reviews.FirstOrDefault(r => r.Id == reviewId)).FirstOrDefault();
+        return places.Select(p => p.Reviews.FirstOrDefault(r => r.Id == reviewId.ToString())).FirstOrDefault();
     }
 
     public async Task<IEnumerable<BurgerPlace>> GetAllPlacesWithoutReviews(CancellationToken cancellationToken)

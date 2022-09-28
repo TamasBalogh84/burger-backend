@@ -1,11 +1,12 @@
 ﻿using System.Text.Json.Serialization;
+using Newtonsoft.Json;
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Review
 {
-    [JsonPropertyName("reviewId")] 
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonProperty(PropertyName = "reviewId")]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
     [JsonPropertyName("reviewerId")]
     public string ReviewerId { get; set; }

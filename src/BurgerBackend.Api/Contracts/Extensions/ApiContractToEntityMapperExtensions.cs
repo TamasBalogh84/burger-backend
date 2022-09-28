@@ -8,7 +8,7 @@ public static class ApiContractToEntityMapperExtensions
     {
         return new Review
         {
-            Id = review.ReviewId,
+            Id = review.ReviewId.ToString(),
             ReviewerId = review.ReviewerId,
             Scorings = review.Scorings.Select(s => s.ToScoring()),
             ImageUrl = review.ImageUrl
@@ -28,6 +28,7 @@ public static class ApiContractToEntityMapperExtensions
     {
         return new BurgerPlace()
         {
+            Id = place.Id,
             AvailableBurgers = place.AvailableBurgers.ToBurgers(),
             Information = place.Information,
             Location = place.Location.ToLocation(),

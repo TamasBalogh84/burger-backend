@@ -30,7 +30,7 @@ public class BurgerPlacesController : ControllerBase
     [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> CreatePlace([FromQuery] CreatePlaceParameters parameters, [FromServices] ICreatePlaceHandler handler, CancellationToken cancellationToken)
+    public async Task<ActionResult> CreatePlace(CreatePlaceParameters parameters, [FromServices] ICreatePlaceHandler handler, CancellationToken cancellationToken)
     {
         if (handler is null)
         {
@@ -85,7 +85,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     [HttpPost("{placeId}/reviews")]
     [ProducesResponseType(typeof(Review), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -102,7 +102,7 @@ public class BurgerPlacesController : ControllerBase
     }
 
 
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     [HttpPut("{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -117,7 +117,7 @@ public class BurgerPlacesController : ControllerBase
 
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
-    [ValidateAntiForgeryToken]
+    //[ValidateAntiForgeryToken]
     [HttpDelete("{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]

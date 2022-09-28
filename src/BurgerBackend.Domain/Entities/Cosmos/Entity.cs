@@ -1,12 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Entity
 {
-    [JsonPropertyName("id")]
-    public Guid Id { get; set; } = Guid.NewGuid();
+    [JsonProperty(PropertyName = "id")]
+    public string Id { get; set; } = Guid.NewGuid().ToString();
 
-    [JsonPropertyName("pk")]
+    [JsonProperty(PropertyName = "pk")]
     public string PartitionKey { get; set; } = string.Empty;
 }
