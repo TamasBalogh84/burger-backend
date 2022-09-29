@@ -32,7 +32,7 @@ namespace BurgerBackend.Api.Tests.Handlers
         public async Task Should_Return_Ok(BurgerPlaceTestData testData)
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
+            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
 
             var data = testData.AsBurgerPlace();
 
@@ -59,7 +59,7 @@ namespace BurgerBackend.Api.Tests.Handlers
         public async Task Should_Return_BadRequest()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
+            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
 
             parameters.PlaceId = Guid.Empty;
 
@@ -76,7 +76,7 @@ namespace BurgerBackend.Api.Tests.Handlers
         public async Task Should_Return_NotFound()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
+            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
 
             _repositoryMock.Reset();
 
@@ -96,7 +96,7 @@ namespace BurgerBackend.Api.Tests.Handlers
         public async Task Should_Return_InternalServerError()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.OkCreateReviewParameters;
+            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
 
             _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());

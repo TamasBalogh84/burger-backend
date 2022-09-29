@@ -1,5 +1,6 @@
 ﻿using BurgerBackend.Api.Contracts.Extensions;
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
+using BurgerBackend.Api.Contracts.Parameters;
 using BurgerBackend.Api.Contracts.Results;
 using BurgerBackend.Domain.Repositories.Cosmos;
 
@@ -16,15 +17,14 @@ public class GetAllPlacesHandler : IGetAllPlacesHandler
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<GetAllPlacesResult> ExecuteAsync(bool skipReviews, CancellationToken cancellationToken = default)
+    public async Task<GetAllPlacesResult> ExecuteAsync(GetAllPlacesParameters parameters, CancellationToken cancellationToken = default)
     {
         try
         {
-            var result = skipReviews 
-                ? await _burgerPlacesRepository.GetAllPlacesWithoutReviews(cancellationToken) 
-                : await _burgerPlacesRepository.GetAllAsync(cancellationToken);
+            var result = await _burgerPlacesRepository
+                .GetAllAsync(parameters.SkipReviews, parameters.PageNumber, parameters.PageSize, cancellationToken);
 
-            if (result.Any()) return GetAllPlacesResult.Ok(result.ToBurgerPlaces());
+            if (result.Any()) return GetAllPlacesResult.Ok(result.Select(b => b.ToBurgerPlace()));
 
             var logMessage = "No burger places found!";
             _logger.LogInformation(logMessage);

@@ -1,15 +1,15 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Location
 {
-    [JsonPropertyName("city")]
+    [JsonProperty(PropertyName = "city")]
     public string City { get; set; } = string.Empty;
 
-    [JsonPropertyName("address")]
+    [JsonProperty(PropertyName = "address")]
     public string Address { get; set; } = string.Empty;
 
-    [JsonPropertyName("coordinates")]
+    [JsonProperty(PropertyName = "coordinates")]
     public string Coordinates { get; set; } = string.Empty;
 }

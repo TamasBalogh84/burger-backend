@@ -2,7 +2,7 @@
 
 public class Scoring
 {
-    public string ScoringName { get; set; } = string.Empty;
+    public string ScoringName { get; init; } = string.Empty;
 
-    public double ScoreValue { get; set; }
+    public double ScoreValue { get; init; }
 }

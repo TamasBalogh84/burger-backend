@@ -7,10 +7,10 @@ namespace BurgerBackend.Api.Tests.TestData;
 
 public static class CreateReviewParametersTestData
 {
-    public static readonly CreateReviewParameters OkCreateReviewParameters = new (new Review()
+    public static readonly CreateReviewParameters ValidCreateReviewParameters = new (new Review
     {
-        Id = new Guid("c8ff16ca-f292-4bb0-94b0-b918172f32c3"),
-        ReviewerId = "test@test.com",
+        ReviewId = new Guid("c8ff16ca-f292-4bb0-94b0-b918172f32c3"),
+        ReviewerId = Guid.NewGuid().ToString(),
         ImageUrl = "www.test.com",
         Scorings = new List<Scoring>()
         {

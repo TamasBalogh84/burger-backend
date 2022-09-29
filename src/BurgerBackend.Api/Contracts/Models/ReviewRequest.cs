@@ -2,10 +2,10 @@
 {
     public class ReviewRequest
     {
-        public string ReviewerId { get; set; }
+        public string ReviewerId { get; init; } = string.Empty;
 
-        public IEnumerable<Scoring> Scorings { get; set; }
+        public IEnumerable<Scoring> Scorings { get; init; }
 
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; init; } = string.Empty;
     }
 }

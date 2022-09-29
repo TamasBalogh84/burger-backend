@@ -1,12 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Burger
 {
-    [JsonPropertyName("name")]
+    [JsonProperty(PropertyName = "name")]
     public string Name { get; set; } = string.Empty;
 
-    [JsonPropertyName("price")]
+    [JsonProperty(PropertyName = "price")]
     public double Price { get; set; }
 }

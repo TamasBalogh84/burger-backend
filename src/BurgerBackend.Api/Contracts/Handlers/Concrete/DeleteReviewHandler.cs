@@ -34,14 +34,14 @@ public class DeleteReviewHandler : IDeleteReviewHandler
 
             var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken);
 
-            var review = place?.Reviews.First(r => r.Id == parameters.ReviewId.ToString());
+            var review = place?.Reviews.FirstOrDefault(r => r.Id == parameters.ReviewId.ToString());
 
             if (place is null || review is null)
             {
-                return UpdateReviewResult.NotFound($"No data found to delete {parameters.PlaceId} {parameters.ReviewId}");
+                return UpdateReviewResult.NotFound($"No data found to delete Place ID: {parameters.PlaceId} Review ID: {parameters.ReviewId}");
             }
 
-            place.Reviews.ToList().Remove(review);
+            place.Reviews = place.Reviews.Where(r => r.Id != parameters.ReviewId.ToString());
 
             await _burgerPlacesRepository.StoreAsync(place, cancellationToken);
 

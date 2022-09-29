@@ -14,26 +14,34 @@ public static class EntityToApiContractMapperExtensions
 
         return new BurgerPlace
         {
-            Id = burgerPlace.Id,
+            Id = Guid.Parse(burgerPlace.Id),
             AvailableBurgers = ToBurgers(burgerPlace.AvailableBurgers),
+            Name = burgerPlace.Name,
             Information = burgerPlace.Information,
-            OpeningTime = burgerPlace.OpeningTime,
+            OpeningTimes = burgerPlace.OpeningTimes.Select(o => o.ToOpeningTime()),
             Location = ToLocation(burgerPlace.Location),
-            Reviews = ToReviews(burgerPlace.Reviews)
+            Reviews = burgerPlace.Reviews.Select(r => r.ToReview())
         };
     }
 
-    public static IEnumerable<BurgerPlace> ToBurgerPlaces(this IEnumerable<Domain.Entities.Cosmos.BurgerPlace> burgerPlaces)
+    public static Review ToReview(this Domain.Entities.Cosmos.Review review)
     {
-        if (burgerPlaces is null)
+        if (review is null)
         {
-            throw new ArgumentNullException(nameof(burgerPlaces));
+            throw new ArgumentNullException(nameof(review));
         }
 
-        return burgerPlaces.Select(p => p.ToBurgerPlace());
+        return new Review
+        {
+            ReviewId = Guid.Parse(review.Id),
+            ReviewerId = review.ReviewerId,
+            Scorings = review.Scorings.Select(s => s.ToScoring()),
+            ImageUrl = review.ImageUrl,
+            CreatedDate = review.CreatedDate
+        };
     }
 
-    public static IEnumerable<Burger> ToBurgers(this IEnumerable<Domain.Entities.Cosmos.Burger> burgers)
+    private static IEnumerable<Burger> ToBurgers(this IEnumerable<Domain.Entities.Cosmos.Burger> burgers)
     {
         if (burgers is null)
         {
@@ -49,7 +57,17 @@ public static class EntityToApiContractMapperExtensions
             .ToList();
     }
 
-    public static Location ToLocation(this Domain.Entities.Cosmos.Location location)
+    private static OpeningTime ToOpeningTime(this Domain.Entities.Cosmos.OpeningTime openingTime)
+    {
+        return new OpeningTime
+        {
+            Day = openingTime.Day,
+            OpeningStartTime = openingTime.OpeningStartTime,
+            OpeningEndTime = openingTime.OpeningEndTime
+        };
+    }
+
+    private static Location ToLocation(this Domain.Entities.Cosmos.Location location)
     {
         if (location is null)
         {
@@ -64,45 +82,17 @@ public static class EntityToApiContractMapperExtensions
         };
     }
 
-    public static IEnumerable<Review> ToReviews(this IEnumerable<Domain.Entities.Cosmos.Review> reviews)
+    private static Scoring ToScoring(this Domain.Entities.Cosmos.Scoring scoring)
     {
-        if (reviews is null)
+        if (scoring is null)
         {
-            throw new ArgumentNullException(nameof(reviews));
+            throw new ArgumentNullException(nameof(scoring));
         }
 
-        return reviews
-            .Select(r => r.ToReview())
-            .ToList();
-    }
-
-    public static Review ToReview(this Domain.Entities.Cosmos.Review review)
-    {
-        if (review is null)
+        return new Scoring
         {
-            throw new ArgumentNullException(nameof(review));
-        }
-
-        return new Review
-        {
-            ReviewId = Guid.Parse(review.Id),
-            ReviewerId = review.ReviewerId,
-            Scorings = review.Scorings.ToScorings(),
-            ImageUrl = review.ImageUrl
+            ScoringName = scoring.ScoringName,
+            ScoreValue = scoring.ScoreValue
         };
-    }
-
-    public static IEnumerable<Scoring> ToScorings(this IEnumerable<Domain.Entities.Cosmos.Scoring> scorings)
-    {
-        if (scorings is null)
-        {
-            throw new ArgumentNullException(nameof(scorings));
-        }
-
-        return scorings.Select(s => new Scoring
-        {
-            ScoringName = s.ScoringName,
-            ScoreValue = s.ScoreValue
-        });
     }
 }

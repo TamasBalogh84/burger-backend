@@ -33,7 +33,8 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
                 return GetReviewsByPlaceIdResult.BadRequest(logMessage);
             }
 
-            var result = await _burgerPlacesRepository.GetReviewsByPlaceIdAsync(parameters.PlaceId, cancellationToken);
+            var result = await _burgerPlacesRepository
+                .GetReviewsByPlaceIdAsync(parameters.PlaceId, parameters.PageNumber, parameters.PageSize, cancellationToken);
 
             if (!result.Any())
             {
@@ -42,7 +43,7 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
                 return GetReviewsByPlaceIdResult.NotFound(logMessage);
             }
 
-            return GetReviewsByPlaceIdResult.Ok(result.ToReviews().ToList());
+            return GetReviewsByPlaceIdResult.Ok(result.Select(r => r.ToReview()));
         }
         catch (Exception e)
         {

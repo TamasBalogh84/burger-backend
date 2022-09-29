@@ -11,7 +11,8 @@ public static class ApiContractToEntityMapperExtensions
             Id = review.ReviewId.ToString(),
             ReviewerId = review.ReviewerId,
             Scorings = review.Scorings.Select(s => s.ToScoring()),
-            ImageUrl = review.ImageUrl
+            ImageUrl = review.ImageUrl,
+            CreatedDate = review.CreatedDate
         };
     }
 
@@ -26,33 +27,44 @@ public static class ApiContractToEntityMapperExtensions
 
     public static BurgerPlace ToBurgerPlace(this Models.BurgerPlace place)
     {
-        return new BurgerPlace()
+        return new BurgerPlace
         {
-            Id = place.Id,
+            Id = place.Id.ToString(),
             AvailableBurgers = place.AvailableBurgers.ToBurgers(),
+            Name = place.Name,
             Information = place.Information,
             Location = place.Location.ToLocation(),
-            OpeningTime = place.OpeningTime,
+            OpeningTimes = place.OpeningTimes.Select(o => o.ToOpeningTime()),
             Reviews = place.Reviews.Select(r => r.ToReview())
         };
     }
 
-    public static IEnumerable<Burger> ToBurgers(this IEnumerable<Models.Burger> burgers)
+    private static IEnumerable<Burger> ToBurgers(this IEnumerable<Models.Burger> burgers)
     {
-        return burgers.Select(b => new Burger()
+        return burgers.Select(b => new Burger
         {
             Name = b.Name,
             Price = b.Price
         });
     }
 
-    public static Location ToLocation(this Models.Location location)
+    private static Location ToLocation(this Models.Location location)
     {
-        return new Location()
+        return new Location
         {
             City = location.City,
             Address = location.Address,
             Coordinates = location.Coordinates
+        };
+    }
+
+    private static OpeningTime ToOpeningTime(this Models.OpeningTime openingtime)
+    {
+        return new OpeningTime
+        {
+            Day = openingtime.Day,
+            OpeningStartTime = openingtime.OpeningStartTime,
+            OpeningEndTime = openingtime.OpeningEndTime
         };
     }
 }

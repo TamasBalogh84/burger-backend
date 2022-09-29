@@ -1,12 +1,12 @@
-﻿using System.Text.Json.Serialization;
+﻿using Newtonsoft.Json;
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
 public class Scoring
 {
-    [JsonPropertyName("scoringName")]
+    [JsonProperty(PropertyName = "scoringName")]
     public string ScoringName { get; set; } = string.Empty;
 
-    [JsonPropertyName("scoringValue")]
+    [JsonProperty(PropertyName = "scoringValue")]
     public double ScoreValue { get; set; }
 }

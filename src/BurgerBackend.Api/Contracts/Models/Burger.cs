@@ -2,7 +2,7 @@
 
 public class Burger
 {
-    public string Name { get; set; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
 
-    public double Price { get; set; }
+    public double Price { get; init; }
 }

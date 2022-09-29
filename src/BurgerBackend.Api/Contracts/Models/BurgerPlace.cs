@@ -4,19 +4,22 @@ namespace BurgerBackend.Api.Contracts.Models;
 
 public class BurgerPlace
 {
-    public string Id { get; set; } = Guid.NewGuid().ToString();
+    public Guid Id { get; init; } = Guid.NewGuid();
 
     [Required]
-    public IEnumerable<Burger> AvailableBurgers { get; set; }
+    public IEnumerable<Burger> AvailableBurgers { get; init; }
 
     [Required]
-    public string Information { get; set; } = string.Empty;
+    public string Name { get; init; } = string.Empty;
 
     [Required]
-    public Location Location { get; set; }
+    public string Information { get; init; } = string.Empty;
 
     [Required]
-    public string OpeningTime { get; set; } = string.Empty;
+    public Location Location { get; init; }
 
-    public IEnumerable<Review> Reviews { get; set; }
+    [Required]
+    public IEnumerable<OpeningTime> OpeningTimes { get; init; }
+
+    public IEnumerable<Review> Reviews { get; init; }
 }

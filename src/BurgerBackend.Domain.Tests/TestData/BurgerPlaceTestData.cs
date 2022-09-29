@@ -7,14 +7,15 @@ namespace BurgerBackend.Api.Tests.TestData;
 public record BurgerPlaceTestData (
     Guid PlaceId,
     IEnumerable<Burger> AvailableBurgers,
+    string Name,
     string Information,
     Location Location,
-    string OpeningTime,
+    IEnumerable<OpeningTime> OpeningTimes,
     IEnumerable<Review> Reviews)
 {
-    public readonly static BurgerPlaceTestData ContainingOneReview = new(
+    public static readonly BurgerPlaceTestData ContainingOneReview = new(
         PlaceId: Guid.NewGuid(),
-        AvailableBurgers: new List<Burger>()
+        AvailableBurgers: new List<Burger>
         {
             new ()
             {
@@ -22,35 +23,45 @@ public record BurgerPlaceTestData (
                 Price = 10.0
             }
         },
+        Name: "best place",
         Information: "this is a good place",
-        Location: new Location()
+        Location: new Location
         {
             City = "test city",
             Address = "test str 12",
             Coordinates = "10,32.46 65,65.43"
         },
-        OpeningTime: "0-24",
-        Reviews: new List<Review>()
+        OpeningTimes: new List<OpeningTime>
         {
             new ()
             {
-                Id = Guid.NewGuid(),
-                ReviewerId = "test@test.com",
+                Day = "Monday",
+                OpeningStartTime = "10:00:00",
+                OpeningEndTime = "20:00:00"
+            }
+        },
+        Reviews: new List<Review>
+        {
+            new ()
+            {
+                Id = Guid.NewGuid().ToString(),
+                ReviewerId = Guid.NewGuid().ToString(),
                 ImageUrl = "abc.test.com/abc.png",
-                Scorings = new List<Scoring>()
+                Scorings = new List<Scoring>
                 {
                     new ()
                     {
                         ScoringName = "texture",
                         ScoreValue = 4.4
                     }
-                }
+                },
+                CreatedDate = DateTimeOffset.Parse("2022-09-29 10:00:00")
             }
         });
 
-    public readonly static BurgerPlaceTestData ContainingMoreReviews = new(
+    public static readonly BurgerPlaceTestData ContainingMoreReviews = new(
         PlaceId: Guid.NewGuid(),
-        AvailableBurgers: new List<Burger>()
+        AvailableBurgers: new List<Burger>
         {
             new ()
             {
@@ -58,20 +69,29 @@ public record BurgerPlaceTestData (
                 Price = 10.0
             }
         },
+        Name: "second best place",
         Information: "this is a good place",
-        Location: new Location()
+        Location: new Location
         {
             City = "test city",
             Address = "test str 12",
             Coordinates = "10,32.46 65,65.43"
         },
-        OpeningTime: "0-24",
-        Reviews: new List<Review>()
+        OpeningTimes: new List<OpeningTime>
         {
             new ()
             {
-                Id = Guid.NewGuid(),
-                ReviewerId = "test2@test.com",
+                Day = "Saturday",
+                OpeningStartTime = "10:00:00",
+                OpeningEndTime = "22:00:00"
+            }
+        },
+        Reviews: new List<Review>
+        {
+            new ()
+            {
+                Id = Guid.NewGuid().ToString(),
+                ReviewerId = Guid.NewGuid().ToString(),
                 ImageUrl = "abc.test.com/abc2.png",
                 Scorings = new List<Scoring>()
                 {
@@ -85,12 +105,13 @@ public record BurgerPlaceTestData (
                         ScoringName = "texture",
                         ScoreValue = 3.4
                     }
-                }
+                },
+                CreatedDate = DateTimeOffset.Parse("2022-09-29 17:00:00")
             },
             new ()
             {
-                Id = Guid.NewGuid(),
-                ReviewerId = "test@test.com",
+                Id = Guid.NewGuid().ToString(),
+                ReviewerId = Guid.NewGuid().ToString(),
                 ImageUrl = "abc.test.com/abc.png",
                 Scorings = new List<Scoring>()
                 {
@@ -99,21 +120,22 @@ public record BurgerPlaceTestData (
                         ScoringName = "texture",
                         ScoreValue = 4.4
                     }
-                }
+                },
+                CreatedDate = DateTimeOffset.Parse("2022-09-29 16:00:00")
             }
         });
 
-    public readonly static List<BurgerPlaceTestData> HappyPathTestCases = new()
+    public static readonly List<BurgerPlaceTestData> HappyPathTestCases = new()
     {
         ContainingOneReview, ContainingMoreReviews
     };
 
     public BurgerPlace AsBurgerPlace() => new ()
     {
-        Id = PlaceId,
+        Id = PlaceId.ToString(),
         AvailableBurgers = AvailableBurgers,
         Information = Information,
-        OpeningTime = OpeningTime,
+        OpeningTimes = OpeningTimes,
         Location = Location,
         Reviews = Reviews
     };

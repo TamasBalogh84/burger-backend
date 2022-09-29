@@ -23,7 +23,7 @@ public class BurgerPlacesController : ControllerBase
             throw new ArgumentNullException(nameof(handler));
         }
 
-        return await handler.ExecuteAsync(parameters.SkipReviews, cancellationToken);
+        return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
     [HttpPost]
