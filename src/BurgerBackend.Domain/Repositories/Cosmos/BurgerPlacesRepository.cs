@@ -55,10 +55,10 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
                ?? Enumerable.Empty<Review>();
     }
 
-    public async Task<Review?> GetReviewByIdAsync(Guid reviewId, CancellationToken cancellationToken)
+    public async Task<Review?> GetReviewByIdAsync(Guid placeId, Guid reviewId, CancellationToken cancellationToken)
     {
-        var places = await GetAllAsync(cancellationToken);
+        var place = await GetByIdAsync(placeId.ToString(), cancellationToken);
 
-        return places.Select(p => p.Reviews.FirstOrDefault(r => r.Id == reviewId.ToString())).FirstOrDefault();
+        return place?.Reviews.FirstOrDefault(r => r.Id == reviewId.ToString());
     }
 }

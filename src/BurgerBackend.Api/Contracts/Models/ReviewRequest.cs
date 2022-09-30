@@ -1,11 +1,11 @@
-﻿namespace BurgerBackend.Api.Contracts.Models
-{
-    public class ReviewRequest
-    {
-        public string ReviewerId { get; init; } = string.Empty;
+﻿namespace BurgerBackend.Api.Contracts.Models;
 
-        public IEnumerable<Scoring> Scorings { get; init; }
+public record ReviewRequest(string ReviewText, IEnumerable<Scoring> Scorings, string ImageUrl);
 
-        public string ImageUrl { get; init; } = string.Empty;
-    }
-}
+//{
+//public string ReviewerId { get; init; } = string.Empty;
+
+//public IEnumerable<Scoring> Scorings { get; init; }
+
+//public string ImageUrl { get; init; } = string.Empty;
+//}

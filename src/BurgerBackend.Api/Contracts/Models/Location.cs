@@ -1,10 +1,10 @@
 ﻿namespace BurgerBackend.Api.Contracts.Models;
 
-public class Location
-{
-    public string City { get; init; } = string.Empty;
+public record Location(string City, string Address, string Coordinates);
+//{
+//    public string City { get; init; } = string.Empty;
 
-    public string Address { get; init; } = string.Empty;
+//    public string Address { get; init; } = string.Empty;
 
-    public string Coordinates { get; init; } = string.Empty;
-}
+//    public string Coordinates { get; init; } = string.Empty;
+//}

@@ -2,7 +2,7 @@
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
-public class BurgerPlace : Entity
+public record BurgerPlace : Entity
 {
     [JsonProperty(PropertyName = "availableBurgers")]
     public IEnumerable<Burger> AvailableBurgers { get; set; }

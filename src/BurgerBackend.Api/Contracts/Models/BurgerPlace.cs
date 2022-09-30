@@ -2,7 +2,7 @@
 
 namespace BurgerBackend.Api.Contracts.Models;
 
-public class BurgerPlace
+public record BurgerPlace
 {
     public Guid Id { get; init; } = Guid.NewGuid();
 

@@ -14,11 +14,11 @@ public static class CreateReviewParametersTestData
         ImageUrl = "www.test.com",
         Scorings = new List<Scoring>()
         {
-            new()
-            {
-                ScoringName = "texture",
-                ScoreValue = 4.8f
-            }
+            new(ScoringName: "texture", ScoreValue: 4.8)
+            //{
+            //    ScoringName = "texture",
+            //    ScoreValue = 4.8
+            //}
         }
     })
     {

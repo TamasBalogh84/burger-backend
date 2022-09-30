@@ -4,7 +4,7 @@ namespace BurgerBackend.Domain.Repositories.Cosmos;
 
 public interface IBurgerPlacesRepository : ICosmosRepositoryBase<BurgerPlace>
 {
-    Task<Review?> GetReviewByIdAsync(Guid reviewId, CancellationToken cancellationToken);
+    Task<Review?> GetReviewByIdAsync(Guid placeId, Guid reviewId, CancellationToken cancellationToken);
 
     Task<IEnumerable<BurgerPlace>> GetAllAsync(bool skipReviews, int pageNumber, int pageSize,
         CancellationToken cancellationToken);

@@ -1,14 +1,16 @@
 ﻿namespace BurgerBackend.Api.Contracts.Models;
 
-public class Review
+public record Review
 {
-    public Guid ReviewId { get; set; } = Guid.NewGuid();
+    public Guid ReviewId { get; init; } = Guid.NewGuid();
 
-    public string ReviewerId { get; set; } = string.Empty;
+    public string ReviewerId { get; init; } = string.Empty;
 
-    public IEnumerable<Scoring> Scorings { get; set; }
+    public string ReviewText { get; init; } = string.Empty;
 
-    public string ImageUrl { get; set; } = string.Empty;
+    public IEnumerable<Scoring> Scorings { get; init; }
 
-    public DateTimeOffset CreatedDate { get; set; } = DateTimeOffset.UtcNow;
+    public string ImageUrl { get; init; } = string.Empty;
+
+    public DateTimeOffset CreatedDate { get; init; } = DateTimeOffset.UtcNow;
 }

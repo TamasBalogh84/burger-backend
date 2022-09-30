@@ -1,8 +1,8 @@
 ﻿namespace BurgerBackend.Api.Contracts.Models;
 
-public class Burger
-{
-    public string Name { get; init; } = string.Empty;
+public record Burger(string Name, double Price);
+//{
+//    public string Name { get; init; } = string.Empty;
 
-    public double Price { get; init; }
-}
+//    public double Price { get; init; }
+//}

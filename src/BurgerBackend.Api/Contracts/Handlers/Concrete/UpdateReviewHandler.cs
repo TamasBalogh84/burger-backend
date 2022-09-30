@@ -2,6 +2,8 @@
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
 using BurgerBackend.Api.Contracts.Parameters;
 using BurgerBackend.Api.Contracts.Results;
+using BurgerBackend.Api.Extensions;
+using BurgerBackend.Domain.Entities.Cosmos;
 using BurgerBackend.Domain.Repositories.Cosmos;
 
 namespace BurgerBackend.Api.Contracts.Handlers.Concrete;
@@ -39,15 +41,23 @@ public class UpdateReviewHandler : IUpdateReviewHandler
 
             if (place is null || review is null)
             {
-                return UpdateReviewResult.NotFound($"No data found to update {parameters.PlaceId} {parameters.ReviewId}");
+                return UpdateReviewResult.NotFound($"No data found to update PlaceID: {parameters.PlaceId} ReviewID: {parameters.ReviewId}");
             }
 
-            review.Scorings = parameters.ReviewRequest.Scorings.Select(s => s.ToScoring());
-            review.ImageUrl = parameters.ReviewRequest.ImageUrl;
+            var updatedReview = new Review
+            {
+                Id = review.Id,
+                ReviewerId = review.ReviewerId,
+                Scorings = parameters.ReviewRequest.Scorings.Select(s => s.ToScoring()),
+                ImageUrl = parameters.ReviewRequest.ImageUrl,
+                CreatedDate = review.CreatedDate
+            };
+
+            place.Reviews = place.Reviews.Replace(r => r.Id == parameters.ReviewId.ToString(), updatedReview);
 
             await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
 
-            return UpdateReviewResult.Ok();
+            return UpdateReviewResult.Ok(updatedReview.Id);
         }
         catch (Exception e)
         {

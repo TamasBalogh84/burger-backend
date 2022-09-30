@@ -10,6 +10,7 @@ public static class ApiContractToEntityMapperExtensions
         {
             Id = review.ReviewId.ToString(),
             ReviewerId = review.ReviewerId,
+            ReviewText = review.ReviewText,
             Scorings = review.Scorings.Select(s => s.ToScoring()),
             ImageUrl = review.ImageUrl,
             CreatedDate = review.CreatedDate
@@ -18,11 +19,11 @@ public static class ApiContractToEntityMapperExtensions
 
     public static Scoring ToScoring(this Models.Scoring scoring)
     {
-        return new Scoring
-        {
-            ScoringName = scoring.ScoringName,
-            ScoreValue = scoring.ScoreValue
-        };
+        return new Scoring(ScoringName: scoring.ScoringName, ScoreValue: scoring.ScoreValue);
+        //{
+        //    ScoringName = scoring.ScoringName,
+        //    ScoreValue = scoring.ScoreValue
+        //};
     }
 
     public static BurgerPlace ToBurgerPlace(this Models.BurgerPlace place)
@@ -41,30 +42,32 @@ public static class ApiContractToEntityMapperExtensions
 
     private static IEnumerable<Burger> ToBurgers(this IEnumerable<Models.Burger> burgers)
     {
-        return burgers.Select(b => new Burger
-        {
-            Name = b.Name,
-            Price = b.Price
-        });
+        return burgers.Select(b => new Burger (Name: b.Name, Price: b.Price)
+        //{
+        //    Name = b.Name,
+        //    Price = b.Price
+        //}
+        );
     }
 
     private static Location ToLocation(this Models.Location location)
     {
-        return new Location
-        {
-            City = location.City,
-            Address = location.Address,
-            Coordinates = location.Coordinates
-        };
+        return new Location(City: location.City, Address: location.Address, Coordinates: location.Coordinates);
+        //{
+        //    City = location.City,
+        //    Address = location.Address,
+        //    Coordinates = location.Coordinates
+        //};
     }
 
-    private static OpeningTime ToOpeningTime(this Models.OpeningTime openingtime)
+    private static OpeningTime ToOpeningTime(this Models.OpeningTime openingTime)
     {
-        return new OpeningTime
-        {
-            Day = openingtime.Day,
-            OpeningStartTime = openingtime.OpeningStartTime,
-            OpeningEndTime = openingtime.OpeningEndTime
-        };
+        return new OpeningTime(Day: openingTime.Day, OpeningStartTime: openingTime.OpeningStartTime,
+            OpeningEndTime: openingTime.OpeningEndTime);
+        //{
+        //    Day = openingtime.Day,
+        //    OpeningStartTime = openingtime.OpeningStartTime,
+        //    OpeningEndTime = openingtime.OpeningEndTime
+        //};
     }
 }

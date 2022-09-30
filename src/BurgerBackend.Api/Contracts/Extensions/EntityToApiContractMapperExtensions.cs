@@ -35,6 +35,7 @@ public static class EntityToApiContractMapperExtensions
         {
             ReviewId = Guid.Parse(review.Id),
             ReviewerId = review.ReviewerId,
+            ReviewText = review.ReviewText,
             Scorings = review.Scorings.Select(s => s.ToScoring()),
             ImageUrl = review.ImageUrl,
             CreatedDate = review.CreatedDate
@@ -49,22 +50,24 @@ public static class EntityToApiContractMapperExtensions
         }
 
         return burgers
-            .Select(b => new Burger
-            {
-                Name = b.Name,
-                Price = b.Price
-            })
+            .Select(b => new Burger (Name: b.Name, Price: b.Price)
+            //{
+            //    Name = b.Name,
+            //    Price = b.Price
+            //}
+            )
             .ToList();
     }
 
     private static OpeningTime ToOpeningTime(this Domain.Entities.Cosmos.OpeningTime openingTime)
     {
-        return new OpeningTime
-        {
-            Day = openingTime.Day,
-            OpeningStartTime = openingTime.OpeningStartTime,
-            OpeningEndTime = openingTime.OpeningEndTime
-        };
+        return new OpeningTime(Day: openingTime.Day, OpeningStartTime: openingTime.OpeningStartTime,
+            OpeningEndTime: openingTime.OpeningEndTime);
+        //{
+        //    Day = openingTime.Day,
+        //    OpeningStartTime = openingTime.OpeningStartTime,
+        //    OpeningEndTime = openingTime.OpeningEndTime
+        //};
     }
 
     private static Location ToLocation(this Domain.Entities.Cosmos.Location location)
@@ -74,12 +77,12 @@ public static class EntityToApiContractMapperExtensions
             throw new ArgumentNullException(nameof(location));
         }
 
-        return new Location
-        {
-            Address = location.Address, 
-            City = location.City, 
-            Coordinates = location.Coordinates
-        };
+        return new Location(City: location.City, Address: location.Address, Coordinates: location.Coordinates);
+        //{
+        //    Address = location.Address, 
+        //    City = location.City, 
+        //    Coordinates = location.Coordinates
+        //};
     }
 
     private static Scoring ToScoring(this Domain.Entities.Cosmos.Scoring scoring)
@@ -89,10 +92,10 @@ public static class EntityToApiContractMapperExtensions
             throw new ArgumentNullException(nameof(scoring));
         }
 
-        return new Scoring
-        {
-            ScoringName = scoring.ScoringName,
-            ScoreValue = scoring.ScoreValue
-        };
+        return new Scoring(ScoringName: scoring.ScoringName, ScoreValue: scoring.ScoreValue);
+        //{
+        //    ScoringName = scoring.ScoringName,
+        //    ScoreValue = scoring.ScoreValue
+        //};
     }
 }

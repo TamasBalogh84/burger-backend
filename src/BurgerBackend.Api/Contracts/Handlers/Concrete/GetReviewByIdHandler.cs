@@ -33,7 +33,7 @@ public class GetReviewByIdHandler : IGetReviewByIdHandler
                 return GetReviewByIdResult.BadRequest(logMessage);
             }
 
-            var result = await _burgerPlacesRepository.GetReviewByIdAsync(parameters.ReviewId, cancellationToken);
+            var result = await _burgerPlacesRepository.GetReviewByIdAsync(parameters.PlaceId, parameters.ReviewId, cancellationToken);
 
             if (result is null)
             {

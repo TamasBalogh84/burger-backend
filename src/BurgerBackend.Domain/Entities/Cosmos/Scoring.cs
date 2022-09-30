@@ -2,11 +2,4 @@
 
 namespace BurgerBackend.Domain.Entities.Cosmos;
 
-public class Scoring
-{
-    [JsonProperty(PropertyName = "scoringName")]
-    public string ScoringName { get; set; } = string.Empty;
-
-    [JsonProperty(PropertyName = "scoringValue")]
-    public double ScoreValue { get; set; }
-}
+public record Scoring([JsonProperty(PropertyName = "scoringName")] string ScoringName, [JsonProperty(PropertyName = "scoringValue")] double ScoreValue);
