@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers;
 
-//[Authorize]
+[Authorize]
 [ApiController]
 [Route("/api/v1/burger-places")]
 public class BurgerPlacesController : ControllerBase
@@ -27,7 +27,7 @@ public class BurgerPlacesController : ControllerBase
     }
 
     [HttpPost]
-    [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
     public async Task<ActionResult> CreatePlace(CreatePlaceParameters parameters, [FromServices] ICreatePlaceHandler handler, CancellationToken cancellationToken)
@@ -54,6 +54,35 @@ public class BurgerPlacesController : ControllerBase
 
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
+
+    //[HttpPut("{placeId}")]
+    //[ProducesResponseType(typeof(BurgerPlace), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    //public async Task<ActionResult> UpdatePlace(UpdatePlaceParameters parameters, [FromServices] IUpdatePlaceHandler handler, CancellationToken cancellationToken)
+    //{
+    //    if (handler is null)
+    //    {
+    //        throw new ArgumentNullException(nameof(handler));
+    //    }
+
+    //    return await handler.ExecuteAsync(parameters, cancellationToken);
+    //}
+
+    //[HttpDelete("{placeId}")]
+    //[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    //public async Task<ActionResult> DeletePlace(DeletePlaceParameters parameters, [FromServices] IDeletePlaceHandler handler, CancellationToken cancellationToken)
+    //{
+    //    if (handler is null)
+    //    {
+    //        throw new ArgumentNullException(nameof(handler));
+    //    }
+
+    //    return await handler.ExecuteAsync(parameters, cancellationToken);
+    //}
 
     [HttpGet("{placeId}/reviews")]
     [ProducesResponseType(typeof(List<Review>), StatusCodes.Status200OK)]

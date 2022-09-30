@@ -8,6 +8,12 @@ namespace BurgerBackend.Domain.Repositories.Cosmos;
 
 public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurgerPlacesRepository
 {
+    private const string QueryToGetAllWithoutReviews =
+        "SELECT c.id, c.availableBurgers, c.name, c.information, c.location, c.openingTimes FROM c";
+
+    private const string QueryToGetReviews =
+        "SELECT c.reviews FROM c WHERE c.id = @placeId";
+
     public BurgerPlacesRepository(CosmosClient client, IOptions<CosmosConfiguration> cosmosConfiguration,
         ILogger<BurgerPlacesRepository> logger)
         : base(
@@ -18,41 +24,37 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
             logger)
     {}
 
-    public async Task<IEnumerable<BurgerPlace>> GetAllAsync(bool skipReviews, int pageNumber, int pageSize,
-        CancellationToken cancellationToken)
+    public async Task<IEnumerable<BurgerPlace>> GetAllWithoutReviewsAsync(CancellationToken cancellationToken)
     {
-        var result = await GetAllAsync(cancellationToken);
+        var result = Enumerable.Empty<BurgerPlace>();
 
-        var pagedResult = result
-            .OrderBy(bp => bp.Name)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize);
+        var queryDefinition = new QueryDefinition(QueryToGetAllWithoutReviews);
 
-        if (!skipReviews)
+        var feedIterator = Container.GetItemQueryIterator<BurgerPlace>(queryDefinition);
+
+        while (feedIterator.HasMoreResults)
         {
-            return pagedResult;
+            result.ToList().AddRange(await feedIterator.ReadNextAsync(cancellationToken));
         }
 
-        return pagedResult.Select(p => new BurgerPlace
-        {
-            Id = p.Id,
-            AvailableBurgers = p.AvailableBurgers,
-            Information = p.Information,
-            Location = p.Location,
-            OpeningTimes = p.OpeningTimes,
-            Reviews = Enumerable.Empty<Review>()
-        });
+        return result;
     }
 
-    public async Task<IEnumerable<Review>> GetReviewsByPlaceIdAsync(Guid placeId, int pageNumber, int pageSize, CancellationToken cancellationToken)
+    public async Task<IEnumerable<Review>> GetReviewsByPlaceIdAsync(Guid placeId, CancellationToken cancellationToken)
     {
-        var result = await GetByIdAsync(placeId.ToString(), cancellationToken);
+        var result = Enumerable.Empty<Review>();
 
-        return result?.Reviews
-            .OrderBy(r => r.CreatedDate)
-            .Skip((pageNumber - 1) * pageSize)
-            .Take(pageSize) 
-               ?? Enumerable.Empty<Review>();
+        var queryDefinition = new QueryDefinition(QueryToGetReviews)
+            .WithParameter("@placeId", placeId.ToString());
+
+        var feedIterator = Container.GetItemQueryIterator<Review>(queryDefinition);
+
+        while (feedIterator.HasMoreResults)
+        {
+            result.ToList().AddRange(await feedIterator.ReadNextAsync(cancellationToken));
+        }
+
+        return result;
     }
 
     public async Task<Review?> GetReviewByIdAsync(Guid placeId, Guid reviewId, CancellationToken cancellationToken)

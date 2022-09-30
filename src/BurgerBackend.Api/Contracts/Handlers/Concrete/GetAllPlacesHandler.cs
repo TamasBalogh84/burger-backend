@@ -21,15 +21,23 @@ public class GetAllPlacesHandler : IGetAllPlacesHandler
     {
         try
         {
-            var result = await _burgerPlacesRepository
-                .GetAllAsync(parameters.SkipReviews, parameters.PageNumber, parameters.PageSize, cancellationToken);
+            var result = !parameters.SkipReviews
+                ? await _burgerPlacesRepository.GetAllAsync(cancellationToken)
+                : await _burgerPlacesRepository.GetAllWithoutReviewsAsync(cancellationToken);
 
-            if (result.Any()) return GetAllPlacesResult.Ok(result.Select(b => b.ToBurgerPlace()));
+            if (!result.Any())
+            {
+                var logMessage = "No burger places found!";
+                _logger.LogInformation(logMessage);
+                return GetAllPlacesResult.NotFound(logMessage);
+            }
 
-            var logMessage = "No burger places found!";
-            _logger.LogInformation(logMessage);
-            return GetAllPlacesResult.NotFound(logMessage);
+            var pagedResult = result
+                .OrderBy(bp => bp.Name)
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize);
 
+            return GetAllPlacesResult.Ok(pagedResult.Select(b => b.ToBurgerPlace()));
         }
         catch (Exception e)
         {

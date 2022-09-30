@@ -28,7 +28,7 @@ public class UpdateReviewHandler : IUpdateReviewHandler
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _))
+            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _) || parameters.PlaceId == Guid.Empty)
             {
                 const string logMessage = "Invalid Guid!";
                 _logger.LogWarning(logMessage);
@@ -48,6 +48,7 @@ public class UpdateReviewHandler : IUpdateReviewHandler
             {
                 Id = review.Id,
                 ReviewerId = review.ReviewerId,
+                ReviewText = review.ReviewText,
                 Scorings = parameters.ReviewRequest.Scorings.Select(s => s.ToScoring()),
                 ImageUrl = parameters.ReviewRequest.ImageUrl,
                 CreatedDate = review.CreatedDate
@@ -55,9 +56,9 @@ public class UpdateReviewHandler : IUpdateReviewHandler
 
             place.Reviews = place.Reviews.Replace(r => r.Id == parameters.ReviewId.ToString(), updatedReview);
 
-            await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
+            var result = await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
 
-            return UpdateReviewResult.Ok(updatedReview.Id);
+            return UpdateReviewResult.Ok(result);
         }
         catch (Exception e)
         {

@@ -1,12 +1,4 @@
-﻿namespace BurgerBackend.Api.Contracts.Models
-{
-    public record OpeningTime(string Day, string OpeningStartTime, string OpeningEndTime);
+﻿namespace BurgerBackend.Api.Contracts.Models;
 
-    //{
-    //public string Day { get; init; } = string.Empty;
+public record OpeningTime(string Day, string OpeningStartTime, string OpeningEndTime);
 
-    //public string OpeningStartTime { get; init; } = string.Empty;
-
-    //public string OpeningEndTime { get; init; } = string.Empty;
-    //}
-}

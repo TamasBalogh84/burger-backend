@@ -8,7 +8,7 @@ public class UpdateReviewResult :ResultBase
 {
     private UpdateReviewResult(ActionResult result) : base(result) { }
 
-    public static UpdateReviewResult Ok(string? message = null) => new(ResultFactory.CreateContentResult(HttpStatusCode.OK, message));
+    public static UpdateReviewResult Ok(bool message) => new(new OkObjectResult(message));
 
     public static UpdateReviewResult BadRequest(string? message = null) => new(ResultFactory.CreateContentResultWithValidationProblemDetails(HttpStatusCode.BadRequest, message));
 
@@ -19,5 +19,5 @@ public class UpdateReviewResult :ResultBase
     /// <summary>
     /// Performs an implicit conversion from CreateHourPerformanceUserInputResult to ActionResult.
     /// </summary>
-    public static implicit operator UpdateReviewResult(string response) => Ok(response);
+    public static implicit operator UpdateReviewResult(bool response) => Ok(response);
 }

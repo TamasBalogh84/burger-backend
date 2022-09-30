@@ -15,11 +15,11 @@ using BurgerPlace = BurgerBackend.Domain.Entities.Cosmos.BurgerPlace;
 
 namespace BurgerBackend.Api.Tests.Handlers
 {
-    public class CreateReviewHandlerTests
+    public class UpdateReviewHandlerTests
     {
         private readonly Mock<IBurgerPlacesRepository> _repositoryMock = new();
 
-        private readonly Mock<ILogger<CreateReviewHandler>> _loggerMock = new();
+        private readonly Mock<ILogger<UpdateReviewHandler>> _loggerMock = new();
 
         [SetUp]
         public void Setup()
@@ -28,23 +28,21 @@ namespace BurgerBackend.Api.Tests.Handlers
             _loggerMock.Reset();
         }
 
-        [TestCaseSource(typeof(BurgerPlaceTestData), nameof(BurgerPlaceTestData.HappyPathTestCases))]
+        [TestCaseSource(typeof(BurgerPlaceTestData), nameof(BurgerPlaceTestData.MultipleReviewTestCase))]
         public async Task Should_Return_Ok(BurgerPlaceTestData testData)
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
+            var parameters = UpdateReviewParametersTestData.ValidUpdateReviewParameters;
 
             var data = testData.AsBurgerPlace();
 
             _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(data);
 
-            data.Reviews = data.Reviews.Append(parameters.Review.ToReview());
+            _repositoryMock.Setup(e => e.ReplaceAsync(data, parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
+                .ReturnsAsync(true);
 
-            _repositoryMock.Setup(e => e.StoreAsync(data, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(data);
-
-            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+            var sut = new UpdateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
 
             // ACT
 
@@ -52,54 +50,54 @@ namespace BurgerBackend.Api.Tests.Handlers
 
             // ASSERT
             result.Should().BeOkResult()
-                .WithContent(parameters.Review);
+                .WithContent(true);
         }
 
         [Test]
         public async Task Should_Return_BadRequest()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.InvalidCreateReviewParameters;
+            var parameters = UpdateReviewParametersTestData.InvalidUpdateReviewParameters;
 
-            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+            var sut = new UpdateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
 
             // ACT
             var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
 
             // ASSERT
-            result.Should().BeBadRequestResult().WithErrorMessage("Invalid parameters!");
+            result.Should().BeBadRequestResult().WithErrorMessage("Invalid Guid!");
         }
 
         [Test]
         public async Task Should_Return_NotFound()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
+            var parameters = UpdateReviewParametersTestData.NotExistingUpdateReviewParameters;
 
             _repositoryMock.Reset();
 
             _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync((BurgerPlace?)null);
 
-            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+            var sut = new UpdateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
 
             // ACT
             var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
 
             // ASSERT
-            result.Should().BeNotFoundResult().WithErrorMessage($"Burger place not found with id: {parameters.PlaceId}");
+            result.Should().BeNotFoundResult().WithErrorMessage($"No data found to update PlaceID: {parameters.PlaceId} ReviewID: {parameters.ReviewId}");
         }
 
         [Test]
         public async Task Should_Return_InternalServerError()
         {
             // ARRANGE
-            var parameters = CreateReviewParametersTestData.ValidCreateReviewParameters;
+            var parameters = UpdateReviewParametersTestData.ValidUpdateReviewParameters;
 
             _repositoryMock.Setup(e => e.GetByIdAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
                 .ThrowsAsync(new Exception());
 
-            var sut = new CreateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
+            var sut = new UpdateReviewHandler(_repositoryMock.Object, _loggerMock.Object);
 
             // ACT
             var result = await sut.ExecuteAsync(parameters, CancellationToken.None);

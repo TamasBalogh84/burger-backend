@@ -5,5 +5,5 @@ namespace BurgerBackend.Api.Contracts.Handlers.Abstract;
 
 public interface IDeleteReviewHandler
 {
-    Task<UpdateReviewResult> ExecuteAsync(DeleteReviewParameters parameters, CancellationToken cancellationToken = default);
+    Task<DeleteReviewResult> ExecuteAsync(DeleteReviewParameters parameters, CancellationToken cancellationToken = default);
 }

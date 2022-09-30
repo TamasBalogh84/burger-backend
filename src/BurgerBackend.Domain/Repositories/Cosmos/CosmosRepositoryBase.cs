@@ -7,6 +7,8 @@ namespace BurgerBackend.Domain.Repositories.Cosmos;
 
 public abstract class CosmosRepositoryBase<TEntity> : ICosmosRepositoryBase<TEntity> where TEntity : Entity
 {
+    private const string GetAllQueryString = "SELECT * FROM c";
+
     private readonly ILogger<CosmosRepositoryBase<TEntity>> _logger;
 
     private readonly string _databaseId;
@@ -15,7 +17,7 @@ public abstract class CosmosRepositoryBase<TEntity> : ICosmosRepositoryBase<TEnt
 
     private readonly PartitionKey _partitionKey;
 
-    protected readonly CosmosClient CosmosClient;
+    private readonly CosmosClient CosmosClient;
         
     protected readonly Container Container;
 
@@ -61,10 +63,10 @@ public abstract class CosmosRepositoryBase<TEntity> : ICosmosRepositoryBase<TEnt
         return result;
     }
 
-    public async Task<IList<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<TEntity>> GetAllAsync(CancellationToken cancellationToken = default)
     {
         var result = new List<TEntity>();
-        var queryDefinition = new QueryDefinition("SELECT * FROM c");
+        var queryDefinition = new QueryDefinition(GetAllQueryString);
         var queryRequestOptions = new QueryRequestOptions { PartitionKey = _partitionKey };
 
         try
@@ -148,30 +150,6 @@ public abstract class CosmosRepositoryBase<TEntity> : ICosmosRepositoryBase<TEnt
             }
 
             _logger.LogError(ex, $"Unable to delete entity with id `{id}` in `{_databaseId}.{_containerId}`.");
-            throw;
-        }
-    }
-
-    public async Task CreateAsync(TEntity entity, CancellationToken cancellationToken = default)
-    {
-        if (entity is null)
-        {
-            throw new ArgumentNullException(nameof(entity));
-        }
-
-        try
-        {
-            entity.PartitionKey = GetPartitionKeyFromPartitionKeyStruct(_partitionKey);
-
-            await Container.CreateItemAsync(
-                entity,
-                _partitionKey,
-                new ItemRequestOptions { EnableContentResponseOnWrite = false },
-                cancellationToken: cancellationToken);
-        }
-        catch (CosmosException ex)
-        {
-            _logger.LogError(ex, $"Unable to create entity with id `{entity.Id}` in `{_databaseId}.{_containerId}`.");
             throw;
         }
     }

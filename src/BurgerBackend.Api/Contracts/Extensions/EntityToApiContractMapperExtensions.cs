@@ -50,12 +50,7 @@ public static class EntityToApiContractMapperExtensions
         }
 
         return burgers
-            .Select(b => new Burger (Name: b.Name, Price: b.Price)
-            //{
-            //    Name = b.Name,
-            //    Price = b.Price
-            //}
-            )
+            .Select(b => new Burger (Name: b.Name, Price: b.Price))
             .ToList();
     }
 
@@ -63,11 +58,6 @@ public static class EntityToApiContractMapperExtensions
     {
         return new OpeningTime(Day: openingTime.Day, OpeningStartTime: openingTime.OpeningStartTime,
             OpeningEndTime: openingTime.OpeningEndTime);
-        //{
-        //    Day = openingTime.Day,
-        //    OpeningStartTime = openingTime.OpeningStartTime,
-        //    OpeningEndTime = openingTime.OpeningEndTime
-        //};
     }
 
     private static Location ToLocation(this Domain.Entities.Cosmos.Location location)
@@ -78,11 +68,6 @@ public static class EntityToApiContractMapperExtensions
         }
 
         return new Location(City: location.City, Address: location.Address, Coordinates: location.Coordinates);
-        //{
-        //    Address = location.Address, 
-        //    City = location.City, 
-        //    Coordinates = location.Coordinates
-        //};
     }
 
     private static Scoring ToScoring(this Domain.Entities.Cosmos.Scoring scoring)
@@ -93,9 +78,5 @@ public static class EntityToApiContractMapperExtensions
         }
 
         return new Scoring(ScoringName: scoring.ScoringName, ScoreValue: scoring.ScoreValue);
-        //{
-        //    ScoringName = scoring.ScoringName,
-        //    ScoreValue = scoring.ScoreValue
-        //};
     }
 }

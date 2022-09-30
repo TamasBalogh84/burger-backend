@@ -16,7 +16,7 @@ public class DeleteReviewHandler : IDeleteReviewHandler
         _logger = logger ?? throw new ArgumentNullException(nameof(logger));
     }
 
-    public async Task<UpdateReviewResult> ExecuteAsync(DeleteReviewParameters parameters, CancellationToken cancellationToken = default)
+    public async Task<DeleteReviewResult> ExecuteAsync(DeleteReviewParameters parameters, CancellationToken cancellationToken = default)
     {
         try
         {
@@ -29,7 +29,7 @@ public class DeleteReviewHandler : IDeleteReviewHandler
             {
                 const string logMessage = "Invalid Guid!";
                 _logger.LogWarning(logMessage);
-                return UpdateReviewResult.BadRequest(logMessage);
+                return DeleteReviewResult.BadRequest(logMessage);
             }
 
             var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken);
@@ -38,19 +38,19 @@ public class DeleteReviewHandler : IDeleteReviewHandler
 
             if (place is null || review is null)
             {
-                return UpdateReviewResult.NotFound($"No data found to delete Place ID: {parameters.PlaceId} Review ID: {parameters.ReviewId}");
+                return DeleteReviewResult.NotFound($"No data found to delete Place ID: {parameters.PlaceId} Review ID: {parameters.ReviewId}");
             }
 
             place.Reviews = place.Reviews.Where(r => r.Id != parameters.ReviewId.ToString());
 
             await _burgerPlacesRepository.StoreAsync(place, cancellationToken);
 
-            return UpdateReviewResult.Ok();
+            return DeleteReviewResult.Ok();
         }
         catch (Exception e)
         {
             _logger.LogError(e.Message);
-            return UpdateReviewResult.InternalServerError(e.Message);
+            return DeleteReviewResult.InternalServerError(e.Message);
         }
     }
 }

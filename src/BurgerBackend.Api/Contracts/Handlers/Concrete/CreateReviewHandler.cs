@@ -21,7 +21,7 @@ public class CreateReviewHandler : ICreateReviewHandler
     {
         try
         {
-            if (parameters.PlaceId == Guid.Empty)
+            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _) || parameters.PlaceId == Guid.Empty)
             {
                 const string logMessage = "Invalid parameters!";
                 _logger.LogWarning(logMessage);

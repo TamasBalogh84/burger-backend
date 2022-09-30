@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Contracts.Results;
 
-public class CreateReviewResult :ResultBase
+public class CreateReviewResult : ResultBase
 {
     private CreateReviewResult(ActionResult result) : base(result) { }
 

@@ -26,7 +26,7 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
                 throw new ArgumentNullException(nameof(parameters));
             }
 
-            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _))
+            if (!Guid.TryParse(parameters.PlaceId.ToString(), out _) || parameters.PlaceId == Guid.Empty)
             {
                 var logMessage = "Invalid Guid!";
                 _logger.LogWarning(logMessage);
@@ -34,7 +34,7 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
             }
 
             var result = await _burgerPlacesRepository
-                .GetReviewsByPlaceIdAsync(parameters.PlaceId, parameters.PageNumber, parameters.PageSize, cancellationToken);
+                .GetReviewsByPlaceIdAsync(parameters.PlaceId, cancellationToken);
 
             if (!result.Any())
             {
@@ -43,7 +43,12 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
                 return GetReviewsByPlaceIdResult.NotFound(logMessage);
             }
 
-            return GetReviewsByPlaceIdResult.Ok(result.Select(r => r.ToReview()));
+            var pagedResult = result
+                .OrderBy(r => r.CreatedDate)
+                .Skip((parameters.PageNumber - 1) * parameters.PageSize)
+                .Take(parameters.PageSize);
+
+            return GetReviewsByPlaceIdResult.Ok(pagedResult.Select(r => r.ToReview()));
         }
         catch (Exception e)
         {
