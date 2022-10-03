@@ -12,7 +12,7 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
         "SELECT c.id, c.availableBurgers, c.name, c.information, c.location, c.openingTimes FROM c";
 
     private const string QueryToGetReviews =
-        "SELECT c.reviews FROM c WHERE c.id = @placeId";
+        "SELECT * FROM c WHERE c.id = @placeId";
 
     public BurgerPlacesRepository(CosmosClient client, IOptions<CosmosConfiguration> cosmosConfiguration,
         ILogger<BurgerPlacesRepository> logger)
@@ -26,7 +26,7 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
 
     public async Task<IEnumerable<BurgerPlace>> GetAllWithoutReviewsAsync(CancellationToken cancellationToken)
     {
-        var result = Enumerable.Empty<BurgerPlace>();
+        var result = new List<BurgerPlace>();
 
         var queryDefinition = new QueryDefinition(QueryToGetAllWithoutReviews);
 
@@ -34,7 +34,7 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
 
         while (feedIterator.HasMoreResults)
         {
-            result.ToList().AddRange(await feedIterator.ReadNextAsync(cancellationToken));
+            result.AddRange(await feedIterator.ReadNextAsync(cancellationToken));
         }
 
         return result;
@@ -42,25 +42,25 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
 
     public async Task<IEnumerable<Review>> GetReviewsByPlaceIdAsync(Guid placeId, CancellationToken cancellationToken)
     {
-        var result = Enumerable.Empty<Review>();
+        var result = new List<BurgerPlace>();
 
         var queryDefinition = new QueryDefinition(QueryToGetReviews)
-            .WithParameter("@placeId", placeId.ToString());
+            .WithParameter("@placeId", placeId);
 
-        var feedIterator = Container.GetItemQueryIterator<Review>(queryDefinition);
+        var feedIterator = Container.GetItemQueryIterator<BurgerPlace>(queryDefinition);
 
         while (feedIterator.HasMoreResults)
         {
-            result.ToList().AddRange(await feedIterator.ReadNextAsync(cancellationToken));
+            result.AddRange(await feedIterator.ReadNextAsync(cancellationToken));
         }
 
-        return result;
+        return result.SelectMany(p => p.Reviews ?? Enumerable.Empty<Review>());
     }
 
     public async Task<Review?> GetReviewByIdAsync(Guid placeId, Guid reviewId, CancellationToken cancellationToken)
     {
         var place = await GetByIdAsync(placeId.ToString(), cancellationToken);
 
-        return place?.Reviews.FirstOrDefault(r => r.Id == reviewId.ToString());
+        return place?.Reviews?.FirstOrDefault(r => r.Id == reviewId.ToString());
     }
 }

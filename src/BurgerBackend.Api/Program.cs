@@ -1,3 +1,4 @@
+﻿using System.Text;
 using Azure.Core;
 using Azure.Identity;
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
@@ -9,16 +10,13 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Azure.Cosmos.Fluent;
 using Microsoft.Extensions.Azure;
 using Microsoft.Extensions.Options;
-using Microsoft.Identity.Web;
 using Microsoft.OpenApi.Models;
-using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.IdentityModel.Tokens;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddMicrosoftIdentityWebApi(builder.Configuration.GetSection("AzureAd"));
-
 builder.Host.ConfigureAppConfiguration(options =>
     {
         options.SetBasePath(Directory.GetCurrentDirectory())
@@ -62,7 +60,7 @@ builder.Host.ConfigureAppConfiguration(options =>
     services.AddScoped<IDeleteReviewHandler, DeleteReviewHandler>();
     services.AddScoped<IAddImageHandler, AddImageHandler>();
 
-    services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key"); // TODO: Change this
+    services.AddApplicationInsightsTelemetryWorkerService(options => options.InstrumentationKey = "ins key example");
 
     services.AddLogging(logging =>
         {
@@ -85,7 +83,7 @@ builder.Services.AddSwaggerGen(option =>
         Description = "Please enter a valid token",
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
-        BearerFormat = "JWT",
+        BearerFormat = "JWT", 
         Scheme = "Bearer"
     });
     option.AddSecurityRequirement(new OpenApiSecurityRequirement
@@ -103,6 +101,26 @@ builder.Services.AddSwaggerGen(option =>
         }
     });
 });
+
+builder.Services.AddAuthentication(option =>
+{
+    option.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    option.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+})
+    .AddJwtBearer(options =>
+    {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = false,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = "https://localhost:7081",
+            ValidAudience = "https://localhost:7081",
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"))
+        };
+    });
 
 var app = builder.Build();
 

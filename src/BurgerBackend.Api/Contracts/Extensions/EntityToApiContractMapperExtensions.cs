@@ -20,7 +20,7 @@ public static class EntityToApiContractMapperExtensions
             Information = burgerPlace.Information,
             OpeningTimes = burgerPlace.OpeningTimes.Select(o => o.ToOpeningTime()),
             Location = ToLocation(burgerPlace.Location),
-            Reviews = burgerPlace.Reviews.Select(r => r.ToReview())
+            Reviews = burgerPlace.Reviews?.Select(r => r.ToReview())
         };
     }
 

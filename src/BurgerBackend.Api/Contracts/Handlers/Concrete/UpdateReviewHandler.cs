@@ -37,7 +37,7 @@ public class UpdateReviewHandler : IUpdateReviewHandler
 
             var place = await _burgerPlacesRepository.GetByIdAsync(parameters.PlaceId.ToString(), cancellationToken);
 
-            var review = place?.Reviews.FirstOrDefault(r => r.Id == parameters.ReviewId.ToString());
+            var review = place?.Reviews?.FirstOrDefault(r => r.Id == parameters.ReviewId.ToString());
 
             if (place is null || review is null)
             {
@@ -48,13 +48,13 @@ public class UpdateReviewHandler : IUpdateReviewHandler
             {
                 Id = review.Id,
                 ReviewerId = review.ReviewerId,
-                ReviewText = review.ReviewText,
+                ReviewText = parameters.ReviewRequest.ReviewText,
                 Scorings = parameters.ReviewRequest.Scorings.Select(s => s.ToScoring()),
                 ImageUrl = parameters.ReviewRequest.ImageUrl,
                 CreatedDate = review.CreatedDate
             };
 
-            place.Reviews = place.Reviews.Replace(r => r.Id == parameters.ReviewId.ToString(), updatedReview);
+            place.Reviews = place.Reviews?.Replace(r => r.Id == parameters.ReviewId.ToString(), updatedReview);
 
             var result = await _burgerPlacesRepository.ReplaceAsync(place, parameters.PlaceId.ToString(), cancellationToken);
 

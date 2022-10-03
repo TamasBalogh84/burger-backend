@@ -1,6 +1,8 @@
-﻿using System.IdentityModel.Tokens.Jwt;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 
@@ -10,43 +12,66 @@ namespace BurgerBackend.Api.Controllers;
 [ApiController]
 public class LoginController : ControllerBase
 {
-    [HttpPost, Route("login")]
-    public IActionResult Login(LoginDTO loginDTO)
+    /// <summary>  
+    /// Generate Json Web Token Method  
+    /// </summary>  
+    /// <param name="userInfo"></param>  
+    /// <returns></returns>  
+    private string GenerateJSONWebToken(LoginModel userInfo)
     {
-        try
+        var securityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("thisisasecretkey@123"));
+        var credentials = new SigningCredentials(securityKey, SecurityAlgorithms.HmacSha256);
+
+        var token = new JwtSecurityToken(
+            "https://localhost:7081",
+          "https://localhost:7081",
+          new List<Claim>(),
+          expires: DateTime.Now.AddMinutes(120),
+          signingCredentials: credentials);
+
+        return new JwtSecurityTokenHandler().WriteToken(token);
+    }
+
+    /// <summary>  
+    /// Hardcoded the User authentication  
+    /// </summary>  
+    /// <param name="login"></param>  
+    /// <returns></returns>  
+    private async Task<LoginModel> AuthenticateUser(LoginModel login)
+    {
+        LoginModel user = null;
+
+        if (login.UserName == "testuser")
         {
-            if (string.IsNullOrEmpty(loginDTO.UserName) ||
-                string.IsNullOrEmpty(loginDTO.Password))
-                return BadRequest("Username and/or Password not specified");
-            if (loginDTO.UserName.Equals("testUser") &&
-                loginDTO.Password.Equals("test123user"))
-            {
-                var secretKey = new SymmetricSecurityKey
-                    (Encoding.UTF8.GetBytes("thisisasecretkey@123"));
-                var signinCredentials = new SigningCredentials
-                    (secretKey, SecurityAlgorithms.HmacSha256);
-                var jwtSecurityToken = new JwtSecurityToken(
-                    issuer: "ABCXYZ",
-                    audience: "http://localhost:51398",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(10),
-                    signingCredentials: signinCredentials
-                );
-                return Ok(new JwtSecurityTokenHandler().
-                    WriteToken(jwtSecurityToken));
-            }
+            user =  new LoginModel { UserName = "testuser", Password = "test123pass" };
         }
-        catch
+        return user;
+    }
+
+    /// <summary>  
+    /// Login Authenticaton using JWT Token Authentication  
+    /// </summary>  
+    /// <param name="data"></param>  
+    /// <returns></returns>  
+    [AllowAnonymous]
+    [HttpPost(nameof(Login))]
+    public async Task<IActionResult> Login([FromBody] LoginModel data)
+    {
+        IActionResult response = Unauthorized();
+        var user = await AuthenticateUser(data);
+        if (data != null)
         {
-            return BadRequest
-                ("An error occurred in generating the token");
+            var tokenString = GenerateJSONWebToken(user);
+            response = Ok(new { Token = tokenString, Message = "Success" });
         }
-        return Unauthorized();
+        return response;
     }
 }
 
-public class LoginDTO
+public class LoginModel
 {
+    [Required]
     public string UserName { get; set; }
+    [Required]
     public string Password { get; set; }
 }

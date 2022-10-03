@@ -7,12 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers;
 
-[Authorize]
+//[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("/api/v1/burger-places")]
 public class BurgerPlacesController : ControllerBase
 {
-    [HttpGet]
+    [HttpGet("burger-places")]
     [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -26,7 +26,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    [HttpPost]
+    [HttpPost("burger-places")]
     [ProducesResponseType(typeof(List<BurgerPlace>), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -40,7 +40,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    [HttpGet("{placeId}")]
+    [HttpGet("burger-places/{placeId}")]
     [ProducesResponseType(typeof(BurgerPlace), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -55,7 +55,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    //[HttpPut("{placeId}")]
+    //[HttpPut("burger-places/{placeId}")]
     //[ProducesResponseType(typeof(BurgerPlace), StatusCodes.Status200OK)]
     //[ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -70,7 +70,7 @@ public class BurgerPlacesController : ControllerBase
     //    return await handler.ExecuteAsync(parameters, cancellationToken);
     //}
 
-    //[HttpDelete("{placeId}")]
+    //[HttpDelete("burger-places/{placeId}")]
     //[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
@@ -84,7 +84,7 @@ public class BurgerPlacesController : ControllerBase
     //    return await handler.ExecuteAsync(parameters, cancellationToken);
     //}
 
-    [HttpGet("{placeId}/reviews")]
+    [HttpGet("burger-places/{placeId}/reviews")]
     [ProducesResponseType(typeof(List<Review>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -99,7 +99,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    [HttpGet("{placeId}/reviews/{reviewId}")]
+    [HttpGet("burger-places/{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(Review), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -115,7 +115,7 @@ public class BurgerPlacesController : ControllerBase
     }
 
     //[ValidateAntiForgeryToken]
-    [HttpPost("{placeId}/reviews")]
+    [HttpPost("burger-places/{placeId}/reviews")]
     [ProducesResponseType(typeof(Review), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -132,7 +132,7 @@ public class BurgerPlacesController : ControllerBase
 
 
     //[ValidateAntiForgeryToken]
-    [HttpPut("{placeId}/reviews/{reviewId}")]
+    [HttpPut("burger-places/{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
@@ -147,7 +147,7 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
     //[ValidateAntiForgeryToken]
-    [HttpDelete("{placeId}/reviews/{reviewId}")]
+    [HttpDelete("burger-places/{placeId}/reviews/{reviewId}")]
     [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]

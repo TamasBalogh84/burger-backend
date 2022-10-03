@@ -21,5 +21,5 @@ public record BurgerPlace
     [Required]
     public IEnumerable<OpeningTime> OpeningTimes { get; init; }
 
-    public IEnumerable<Review> Reviews { get; init; }
+    public IEnumerable<Review>? Reviews { get; init; }
 }
