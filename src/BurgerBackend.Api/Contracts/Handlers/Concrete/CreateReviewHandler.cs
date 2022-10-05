@@ -2,6 +2,7 @@
 using BurgerBackend.Api.Contracts.Handlers.Abstract;
 using BurgerBackend.Api.Contracts.Parameters;
 using BurgerBackend.Api.Contracts.Results;
+using BurgerBackend.Domain.Entities.Cosmos;
 using BurgerBackend.Domain.Repositories.Cosmos;
 
 namespace BurgerBackend.Api.Contracts.Handlers.Concrete;
@@ -36,6 +37,11 @@ public class CreateReviewHandler : ICreateReviewHandler
             }
 
             var newReview = parameters.Review.ToReview();
+
+            if (place.Reviews is null)
+            {
+                place.Reviews = new List<Review>();
+            }
 
             place.Reviews = place.Reviews.Append(newReview);
 

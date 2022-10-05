@@ -38,7 +38,7 @@ public class GetReviewsByPlaceIdHandler : IGetReviewsByPlaceIdHandler
 
             if (!result.Any())
             {
-                var logMessage = $"No burger place with Id {parameters.PlaceId} found!";
+                var logMessage = $"No reviews for Place ID: {parameters.PlaceId} found!";
                 _logger.LogInformation(logMessage);
                 return GetReviewsByPlaceIdResult.NotFound(logMessage);
             }

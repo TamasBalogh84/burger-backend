@@ -13,6 +13,30 @@ public record BurgerPlaceTestData(
     IEnumerable<OpeningTime> OpeningTimes,
     IEnumerable<Review> Reviews)
 {
+    public static readonly BurgerPlaceTestData ContainingNoReviews = new(
+        PlaceId: Guid.Parse("6b0f1d4d-9a17-4c2a-b5d5-b3874ee82999"),
+        AvailableBurgers: new List<Burger>
+        {
+            new (Name: "test burger", Price: 10.0)
+        },
+        Name: "best place",
+        Information: "this is a good place",
+        Location: new Location
+        (
+            City: "test city",
+            Address: "test str 12",
+            Coordinates: "10,32.46 65,65.43"
+        ),
+        OpeningTimes: new List<OpeningTime>
+        {
+            new (
+                Day: "Monday",
+                OpeningStartTime: "10:00:00",
+                OpeningEndTime: "20:00:00"
+            )
+        },
+        Reviews: null);
+
     public static readonly BurgerPlaceTestData ContainingOneReview = new(
         PlaceId: Guid.Parse("6b0f1d4d-9a17-4c2a-b5d5-b3874ee82999"),
         AvailableBurgers: new List<Burger>
@@ -128,6 +152,13 @@ public record BurgerPlaceTestData(
                 CreatedDate = DateTimeOffset.Parse("2022-09-29 17:30:00")
             }
         });
+
+    public static readonly List<BurgerPlaceTestData> AllTestCases = new()
+    {
+        ContainingNoReviews,
+        ContainingOneReview,
+        ContainingMoreReviews
+    };
 
     public static readonly List<BurgerPlaceTestData> HappyPathTestCases = new()
     {

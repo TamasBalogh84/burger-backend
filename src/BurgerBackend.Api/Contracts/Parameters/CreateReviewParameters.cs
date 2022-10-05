@@ -10,7 +10,7 @@ public class CreateReviewParameters
     {
     }
 
-    public CreateReviewParameters(Review review)
+    public CreateReviewParameters(CreateReview review)
     {
         Review = review;
     }
@@ -21,5 +21,5 @@ public class CreateReviewParameters
 
     [FromBody]
     [Required]
-    public Review Review { get; set; }
+    public CreateReview Review { get; set; }
 }

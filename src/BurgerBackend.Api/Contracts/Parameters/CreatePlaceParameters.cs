@@ -6,6 +6,6 @@ namespace BurgerBackend.Api.Contracts.Parameters
     public class CreatePlaceParameters
     {
         [FromBody]
-        public BurgerPlace? Place { get; set; }
+        public CreateBurgerPlace? Place { get; set; }
     }
 }

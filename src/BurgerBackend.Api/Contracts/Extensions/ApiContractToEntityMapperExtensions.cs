@@ -17,6 +17,17 @@ public static class ApiContractToEntityMapperExtensions
         };
     }
 
+    public static Review ToReview(this Models.CreateReview review)
+    {
+        return new Review
+        {
+            ReviewerId = review.ReviewerId,
+            ReviewText = review.ReviewText,
+            Scorings = review.Scorings.Select(s => s.ToScoring()),
+            ImageUrl = review.ImageUrl
+        };
+    }
+
     public static Scoring ToScoring(this Models.Scoring scoring)
     {
         return new Scoring(ScoringName: scoring.ScoringName, ScoreValue: scoring.ScoreValue);
@@ -33,6 +44,18 @@ public static class ApiContractToEntityMapperExtensions
             Location = place.Location.ToLocation(),
             OpeningTimes = place.OpeningTimes.Select(o => o.ToOpeningTime()),
             Reviews = place.Reviews.Select(r => r.ToReview())
+        };
+    }
+
+    public static BurgerPlace ToBurgerPlace(this Models.CreateBurgerPlace place)
+    {
+        return new BurgerPlace
+        {
+            AvailableBurgers = place.AvailableBurgers.ToBurgers(),
+            Name = place.Name,
+            Information = place.Information,
+            Location = place.Location.ToLocation(),
+            OpeningTimes = place.OpeningTimes.Select(o => o.ToOpeningTime()),
         };
     }
 

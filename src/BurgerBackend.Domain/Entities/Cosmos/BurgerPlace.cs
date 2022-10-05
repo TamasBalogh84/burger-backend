@@ -20,5 +20,5 @@ public record BurgerPlace : Entity
     public IEnumerable<OpeningTime> OpeningTimes { get; set; }
 
     [JsonProperty(PropertyName = "reviews")]
-    public IEnumerable<Review>? Reviews { get; set; }
+    public IEnumerable<Review> Reviews { get; set; }
 }

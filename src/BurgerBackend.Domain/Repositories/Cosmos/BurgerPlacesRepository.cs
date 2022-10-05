@@ -1,4 +1,5 @@
-﻿using BurgerBackend.Domain.Config;
+﻿using System.Text;
+using BurgerBackend.Domain.Config;
 using BurgerBackend.Domain.Entities.Cosmos;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -8,6 +9,8 @@ namespace BurgerBackend.Domain.Repositories.Cosmos;
 
 public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurgerPlacesRepository
 {
+    private const string QueryToGetAll = "SELECT * FROM c";
+
     private const string QueryToGetAllWithoutReviews =
         "SELECT c.id, c.availableBurgers, c.name, c.information, c.location, c.openingTimes FROM c";
 
@@ -24,11 +27,27 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
             logger)
     {}
 
-    public async Task<IEnumerable<BurgerPlace>> GetAllWithoutReviewsAsync(CancellationToken cancellationToken)
+    public async Task<IEnumerable<BurgerPlace>> GetAllAsync(string? city, CancellationToken cancellationToken)
     {
         var result = new List<BurgerPlace>();
 
-        var queryDefinition = new QueryDefinition(QueryToGetAllWithoutReviews);
+        var queryDefinition = CreateQueryDefinitionWithCityFilter(city, QueryToGetAll);
+
+        var feedIterator = Container.GetItemQueryIterator<BurgerPlace>(queryDefinition);
+
+        while (feedIterator.HasMoreResults)
+        {
+            result.AddRange(await feedIterator.ReadNextAsync(cancellationToken));
+        }
+
+        return result;
+    }
+
+    public async Task<IEnumerable<BurgerPlace>> GetAllWithoutReviewsAsync(string? city, CancellationToken cancellationToken)
+    {
+        var result = new List<BurgerPlace>();
+
+        var queryDefinition = CreateQueryDefinitionWithCityFilter(city, QueryToGetAllWithoutReviews);
 
         var feedIterator = Container.GetItemQueryIterator<BurgerPlace>(queryDefinition);
 
@@ -62,5 +81,24 @@ public class BurgerPlacesRepository : CosmosRepositoryBase<BurgerPlace>, IBurger
         var place = await GetByIdAsync(placeId.ToString(), cancellationToken);
 
         return place?.Reviews?.FirstOrDefault(r => r.Id == reviewId.ToString());
+    }
+
+    private static QueryDefinition CreateQueryDefinitionWithCityFilter(string? city, string query)
+    {
+        var builder = new StringBuilder(query);
+
+        if (!string.IsNullOrWhiteSpace(city))
+        {
+            builder.Append(" WHERE c.location.City = @city");
+        }
+
+        var queryDefinition = new QueryDefinition(builder.ToString());
+
+        if (!string.IsNullOrWhiteSpace(city))
+        {
+            queryDefinition.WithParameter("@city", city);
+        }
+
+        return queryDefinition;
     }
 }

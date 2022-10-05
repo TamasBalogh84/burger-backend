@@ -28,7 +28,7 @@ namespace BurgerBackend.Api.Tests.Handlers
             _loggerMock.Reset();
         }
 
-        [TestCaseSource(typeof(BurgerPlaceTestData), nameof(BurgerPlaceTestData.HappyPathTestCases))]
+        [TestCaseSource(typeof(BurgerPlaceTestData), nameof(BurgerPlaceTestData.AllTestCases))]
         public async Task Should_Return_Ok(BurgerPlaceTestData testData)
         {
             // ARRANGE
@@ -39,7 +39,12 @@ namespace BurgerBackend.Api.Tests.Handlers
             _repositoryMock.Setup(e => e.GetByIdAsync(parameters.PlaceId.ToString(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(data);
 
-            data.Reviews = data.Reviews.Append(parameters.Review.ToReview());
+            var newReview = parameters.Review.ToReview();
+
+            if (data.Reviews is not null)
+            {
+                data.Reviews = data.Reviews.Append(newReview);
+            }
 
             _repositoryMock.Setup(e => e.StoreAsync(data, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(data);
@@ -51,8 +56,7 @@ namespace BurgerBackend.Api.Tests.Handlers
             var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
 
             // ASSERT
-            result.Should().BeOkResult()
-                .WithContent(parameters.Review);
+            result.Should().BeOkResult();
         }
 
         [Test]

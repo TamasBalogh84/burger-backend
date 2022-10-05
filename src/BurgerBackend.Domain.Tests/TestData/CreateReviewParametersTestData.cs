@@ -7,9 +7,8 @@ namespace BurgerBackend.Api.Tests.TestData;
 
 public static class CreateReviewParametersTestData
 {
-    public static readonly CreateReviewParameters ValidCreateReviewParameters = new (new Review
+    public static readonly CreateReviewParameters ValidCreateReviewParameters = new (new CreateReview
     {
-        ReviewId = Guid.NewGuid(),
         ReviewerId = Guid.NewGuid().ToString(),
         ImageUrl = "www.test.com",
         Scorings = new List<Scoring>()
@@ -21,9 +20,8 @@ public static class CreateReviewParametersTestData
         PlaceId = new Guid("b32ca706-c835-47a6-9e8c-cf889293e507"),
     };
 
-    public static readonly CreateReviewParameters InvalidCreateReviewParameters = new(new Review
+    public static readonly CreateReviewParameters InvalidCreateReviewParameters = new(new CreateReview
     {
-        ReviewId = Guid.Empty,
         ReviewerId = Guid.NewGuid().ToString(),
         ImageUrl = "www.test.com",
         Scorings = new List<Scoring>()

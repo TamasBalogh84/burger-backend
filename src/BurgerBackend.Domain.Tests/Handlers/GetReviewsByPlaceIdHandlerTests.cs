@@ -104,7 +104,7 @@ namespace BurgerBackend.Api.Tests.Handlers
             var result = await sut.ExecuteAsync(parameters, CancellationToken.None);
 
             // ASSERT
-            result.Should().BeNotFoundResult().WithErrorMessage($"No burger place with Id {parameters.PlaceId} found!");
+            result.Should().BeNotFoundResult().WithErrorMessage($"No reviews for Place ID: {parameters.PlaceId} found!");
         }
 
         [Test]

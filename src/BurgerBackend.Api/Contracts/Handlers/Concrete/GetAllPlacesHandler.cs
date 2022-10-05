@@ -22,8 +22,8 @@ public class GetAllPlacesHandler : IGetAllPlacesHandler
         try
         {
             var result = !parameters.SkipReviews
-                ? await _burgerPlacesRepository.GetAllAsync(cancellationToken)
-                : await _burgerPlacesRepository.GetAllWithoutReviewsAsync(cancellationToken);
+                ? await _burgerPlacesRepository.GetAllAsync(parameters.City, cancellationToken)
+                : await _burgerPlacesRepository.GetAllWithoutReviewsAsync(parameters.City, cancellationToken);
 
             if (!result.Any())
             {

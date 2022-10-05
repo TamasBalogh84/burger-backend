@@ -18,6 +18,9 @@ namespace BurgerBackend.Api.Contracts.Parameters
             set => _pageSize = (value > MaxPageSize) ? MaxPageSize : value;
         }
 
+        [FromQuery(Name = "city")]
+        public string? City { get; set; }
+
         [FromQuery(Name = "skipReviews")]
         public bool SkipReviews { get; set; }
     }
