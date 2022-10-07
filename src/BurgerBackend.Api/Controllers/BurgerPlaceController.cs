@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BurgerBackend.Api.Controllers;
 
-//[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
+[Authorize(AuthenticationSchemes = Microsoft.AspNetCore.Authentication.JwtBearer.JwtBearerDefaults.AuthenticationScheme)]
 [ApiController]
 [Route("/api/v1/burger-places")]
 public class BurgerPlacesController : ControllerBase
@@ -116,7 +116,7 @@ public class BurgerPlacesController : ControllerBase
 
     //[ValidateAntiForgeryToken]
     [HttpPost("burger-places/{placeId}/reviews")]
-    [ProducesResponseType(typeof(Review), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(Review), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
