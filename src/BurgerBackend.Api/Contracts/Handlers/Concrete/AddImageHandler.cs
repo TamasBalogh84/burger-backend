@@ -6,6 +6,8 @@ namespace BurgerBackend.Api.Contracts.Handlers.Concrete;
 
 public class AddImageHandler : IAddImageHandler
 {
+    private const int BytesInTwoMegaBytes = 2097152;
+
     private readonly IImagesRepository _imagesRepository;
 
     private readonly ILogger<AddImageHandler> _logger;
@@ -25,7 +27,14 @@ public class AddImageHandler : IAddImageHandler
                 return AddImageResult.BadRequest("Invalid file.");
             }
 
-            var imageUrl = await _imagesRepository.UploadFileToStorage(file.OpenReadStream(), file.FileName, cancellationToken);
+            if (file.Length >= BytesInTwoMegaBytes)
+            {
+                return AddImageResult.BadRequest("File size greater than 2MBs which is not allowed.");
+            }
+
+            var extension = Path.GetExtension(file.FileName);
+
+            var imageUrl = await _imagesRepository.UploadFileToStorage(file.OpenReadStream(), extension, cancellationToken);
 
             return AddImageResult.Ok(imageUrl);
         }

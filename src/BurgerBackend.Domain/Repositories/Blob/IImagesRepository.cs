@@ -3,5 +3,5 @@
 public interface IImagesRepository
 {
 
-    Task<string> UploadFileToStorage(Stream fileStream, string fileName, CancellationToken cancellationToken);
+    Task<string> UploadFileToStorage(Stream fileStream, string fileExtension, CancellationToken cancellationToken);
 }

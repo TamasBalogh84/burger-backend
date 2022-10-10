@@ -6,10 +6,10 @@ namespace BurgerBackend.Api.Controllers;
 
 [Authorize]
 [ApiController]
-[Route("/api/v1/images")]
+[Route("/api/v1/burger-places")]
 public class ImagesController
 {
-    [HttpPost, DisableRequestSizeLimit]
+    [HttpPost("images"), DisableRequestSizeLimit]
     [ProducesResponseType(typeof(List<string>), StatusCodes.Status200OK)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
