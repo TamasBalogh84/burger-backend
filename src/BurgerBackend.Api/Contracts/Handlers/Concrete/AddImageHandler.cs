@@ -22,7 +22,8 @@ public class AddImageHandler : IAddImageHandler
     {
         try
         {
-            if (file.Length == 0)
+
+            if (string.IsNullOrWhiteSpace(file.FileName) || file.Length == 0)
             {
                 return AddImageResult.BadRequest("Invalid file.");
             }
@@ -33,6 +34,8 @@ public class AddImageHandler : IAddImageHandler
             }
 
             var extension = Path.GetExtension(file.FileName);
+
+            // TODO: extension based filtering
 
             var imageUrl = await _imagesRepository.UploadFileToStorage(file.OpenReadStream(), extension, cancellationToken);
 
