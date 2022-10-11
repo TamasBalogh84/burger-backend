@@ -26,7 +26,7 @@ builder.Host.ConfigureAppConfiguration(options =>
 {
     services.Configure<CosmosConfiguration>(hostBuilder.Configuration.GetSection(nameof(CosmosConfiguration)));
 
-    services.AddScoped(s =>
+    services.AddSingleton(s =>
     {
         var cosmosConnectionString = s.GetRequiredService<IOptions<CosmosConfiguration>>().Value.ConnectionString;
         var clientBuilder = new CosmosClientBuilder(cosmosConnectionString);
@@ -47,8 +47,8 @@ builder.Host.ConfigureAppConfiguration(options =>
         clientBuilder.UseCredential(new DefaultAzureCredential());
     });
 
-    services.AddScoped<IBurgerPlacesRepository, BurgerPlacesRepository>();
-    services.AddScoped<IImagesRepository, ImagesRepository>();
+    services.AddSingleton<IBurgerPlacesRepository, BurgerPlacesRepository>();
+    services.AddSingleton<IImagesRepository, ImagesRepository>();
     services.AddScoped<IGetAllPlacesHandler, GetAllPlacesHandler>();
     services.AddScoped<ICreatePlaceHandler, CreatePlaceHandler>();
     services.AddScoped<IGetPlaceByIdHandler, GetPlaceByIdHandler>();
