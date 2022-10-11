@@ -55,34 +55,38 @@ public class BurgerPlacesController : ControllerBase
         return await handler.ExecuteAsync(parameters, cancellationToken);
     }
 
-    //[HttpPut("burger-places/{placeId}")]
-    //[ProducesResponseType(typeof(BurgerPlace), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    //public async Task<ActionResult> UpdatePlace(UpdatePlaceParameters parameters, [FromServices] IUpdatePlaceHandler handler, CancellationToken cancellationToken)
-    //{
+    [HttpPut("burger-places/{placeId}")]
+    [ProducesResponseType(typeof(BurgerPlace), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> UpdatePlace(/*UpdatePlaceParameters parameters, [FromServices] IUpdatePlaceHandler handler, CancellationToken cancellationToken*/)
+    {
+        //if (handler is null)
+        //{
+        //    throw new ArgumentNullException(nameof(handler));
+        //}
+
+        //return await handler.ExecuteAsync(parameters, cancellationToken);
+
+        return Ok();
+    }
+
+    [HttpDelete("burger-places/{placeId}")]
+    [ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult> DeletePlace(/*DeletePlaceParameters parameters, [FromServices] IDeletePlaceHandler handler, CancellationToken cancellationToken*/)
+    {
     //    if (handler is null)
     //    {
     //        throw new ArgumentNullException(nameof(handler));
     //    }
 
     //    return await handler.ExecuteAsync(parameters, cancellationToken);
-    //}
 
-    //[HttpDelete("burger-places/{placeId}")]
-    //[ProducesResponseType(typeof(string), StatusCodes.Status200OK)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
-    //[ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status500InternalServerError)]
-    //public async Task<ActionResult> DeletePlace(DeletePlaceParameters parameters, [FromServices] IDeletePlaceHandler handler, CancellationToken cancellationToken)
-    //{
-    //    if (handler is null)
-    //    {
-    //        throw new ArgumentNullException(nameof(handler));
-    //    }
-
-    //    return await handler.ExecuteAsync(parameters, cancellationToken);
-    //}
+        return Ok();
+    }
 
     [HttpGet("burger-places/{placeId}/reviews")]
     [ProducesResponseType(typeof(List<Review>), StatusCodes.Status200OK)]
